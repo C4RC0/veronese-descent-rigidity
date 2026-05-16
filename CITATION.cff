@@ -3,8 +3,9 @@ message: "If you use this software or refer to these executable certificates, pl
 title: "Executable certificates for Veronese descent rigidity of the Petersen ETF"
 type: software
 authors:
-  - family-names: "TBD"
-    given-names: "TBD"
+  - family-names: "Bori"
+    given-names: "Karoly"
+    alias: "C4RC0"
 repository-code: "https://github.com/C4RC0/veronese-descent-rigidity"
 license: MIT
 keywords:

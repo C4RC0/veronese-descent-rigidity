@@ -1,5 +1,8 @@
 # Veronese Descent Rigidity of the Petersen Equiangular Tight Frame
 
+**Károly Bori**  
+Independent researcher
+
 ## Abstract
 
 The Petersen association scheme on $\binom{5}{2}$ vertices has a
@@ -1069,3 +1072,11 @@ New York, 1993.
 Applied and Numerical Harmonic Analysis, Birkhäuser, 2018.
 
 [Cox73] H. S. M. Coxeter, *Regular Polytopes*, 3rd ed., Dover, New York, 1973.
+
+## Use of AI tools
+
+AI-assisted tools were used during the preparation of this manuscript for
+language editing, code review, exploratory reasoning, and organisation of
+the reproducibility material. The final mathematical statements, proofs,
+source code, computational certificates, and references were checked by the
+author. The author takes full responsibility for all content.
