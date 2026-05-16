@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress NonAsciiCharacters, JSNonASCIINames, JSUnresolvedReference -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -65,7 +66,10 @@
     margin-bottom: 8px;
   }
   .side-panel h3 { margin: 0 0 4px; font-size: 11px; color: #ffcc66; }
+
+  /*noinspection CssUnusedSymbol*/
   .side-panel .ok { color: #88ff88; }
+  /*noinspection CssUnusedSymbol*/
   .side-panel .fail { color: #ff6666; }
   .side-panel .key { color: #88aacc; }
   .side-panel .val { color: #ffffaa; }
@@ -73,7 +77,9 @@
   .side-panel a:hover { text-decoration: underline; }
   #gui-container { margin-bottom: 8px; }
   /* lil-gui placed inside the sidebar */
+  /*noinspection CssUnusedSymbol*/
   .lil-gui { --width: 360px !important; }
+  /*noinspection CssUnusedSymbol*/
   .lil-gui.root { position: static !important; max-height: none; }
   canvas { display: block; width: 100%; height: 100%; }
   .panel canvas { width: 100%; height: 100%; }
@@ -183,9 +189,13 @@
 </script>
 
 <script type="module">
+// noinspection NpmUsedModulesInstalled
 import * as THREE from 'three';
+// noinspection NpmUsedModulesInstalled,JSFileReferences
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// noinspection NpmUsedModulesInstalled,JSFileReferences
 import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
+// noinspection NpmUsedModulesInstalled
 import GUI from 'lil-gui';
 
 const PHI = (1 + Math.sqrt(5)) / 2;
@@ -332,8 +342,13 @@ function isCube(eightIndices) {
   // Secondary: ratios 1 : √2 : √3 within 1%
   const r1 = groups[1][0] / groups[0][0];
   const r2 = groups[2][0] / groups[0][0];
-  if (Math.abs(r1 - Math.SQRT2) > 0.01) return false;
-  if (Math.abs(r2 - Math.sqrt(3)) > 0.01) return false;
+  if (Math.abs(r1 - Math.SQRT2) > 0.01) {
+    return false;
+  }
+  // noinspection RedundantIfStatementJS
+  if (Math.abs(r2 - Math.sqrt(3)) > 0.01) {
+    return false;
+  }
   return true;
 }
 const CUBES = [];  // 5 inscribed tetrahedra, each given by 4 face-pair indices
@@ -650,7 +665,6 @@ function renderAssocPanel() {
   const p110 = intersectionNumber(1, 1, 0);
   const p111 = intersectionNumber(1, 1, 1);
   const p112 = intersectionNumber(1, 1, 2);
-  const p120 = intersectionNumber(1, 2, 0);
   const p121 = intersectionNumber(1, 2, 1);
   const p122 = intersectionNumber(1, 2, 2);
   const p220 = intersectionNumber(2, 2, 0);
@@ -713,7 +727,7 @@ function renderA5Panel() {
     for (let j = 0; j < 5; j++) {
       const v = M[i][j];
       const intensity = Math.min(1, Math.abs(v));
-      const r = v > 0 ? 100 : 0, g_col = 0, b = v < 0 ? 100 : 0;
+      const r = v > 0 ? 100 : 0, b = v < 0 ? 100 : 0;
       const bg = `rgba(${100 + r * 1.5}, ${100 + intensity * 50}, ${100 + b * 1.5}, ${intensity * 0.7})`;
       html += `<td style="padding:0 4px;text-align:right;width:38px;background:${bg};">${v.toFixed(2)}</td>`;
     }
@@ -1203,6 +1217,7 @@ function drawPanelB() {
     ctxB.fillStyle = '#000';
     ctxB.font = `bold ${isActive ? 13 : 10}px monospace`;
     ctxB.textAlign = 'center'; ctxB.textBaseline = 'middle';
+    // noinspection JSCheckFunctionSignatures
     ctxB.fillText(i, x, y);
     // {a, b} Kneser label below the circle
     if (params.showKneserLabels) {
@@ -1249,7 +1264,6 @@ function drawPanelD() {
   const usable = H - padTop - padBottom;
   const slotH = usable / items.length;
   const boxH = Math.min(56, slotH * 0.75);
-  const gapH = slotH - boxH;
 
   ctxD.textAlign = 'center';
   for (let k = 0; k < items.length; k++) {
