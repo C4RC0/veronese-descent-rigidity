@@ -89,7 +89,7 @@ unique up to switching and Petersen automorphism.
 > Veronese-Gram
 >
 > $$
-> K = \tfrac{3}{2}\!\left(Q - \tfrac{1}{3}J\right) = \tfrac{4}{3}I + \tfrac{2}{3}A - \tfrac{1}{3}J
+> K = \tfrac{3}{2}\left(Q - \tfrac{1}{3}J\right) = \tfrac{4}{3}I + \tfrac{2}{3}A - \tfrac{1}{3}J
 > $$
 >
 > equals $2\,E_1$, where $E_1$ is the primitive idempotent of the
@@ -232,7 +232,7 @@ edges. In matrix form:
 Define the centred lift
 
 $$
-K := \tfrac{3}{2}\!\left(Q - \tfrac{1}{3}J\right)
+K := \tfrac{3}{2}\left(Q - \tfrac{1}{3}J\right)
    = \tfrac{4}{3}\,I + \tfrac{2}{3}\,A - \tfrac{1}{3}\,J.
 $$
 
