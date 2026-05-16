@@ -5,7 +5,7 @@ Manuscript, exact algebraic certificates, and reproduction logs for the paper
 
 The paper proves that the unique 10-line equiangular tight frame in $\mathbb{R}^5$
 admits, up to $O(3) \times S_5$, a unique Veronese-image realisation
-$\nu_2(\mathbb{RP}^2) \subset \operatorname{Sym}^2_0(\mathbb{R}^3) \cong \mathbb{R}^5$.
+$\nu_2(\mathbb{RP}^2) \subset \mathrm{Sym}^2_0(\mathbb{R}^3) \cong \mathbb{R}^5$.
 The proof combines a representation-theoretic descent argument (Schur's lemma
 on $A_5$ plus a spectral obstruction on the Veronese surface) with an exact
 computer-assisted certificate for the rigidity of the classical compound of

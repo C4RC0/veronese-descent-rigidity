@@ -11,7 +11,7 @@ realises, up to orthogonal equivalence and relabelling, the classical
 10-line equiangular tight frame (ETF) in $\mathbb{R}^5$ with
 inner-product modulus $1/3$. We prove that this ETF admits an
 essentially unique Veronese-image realisation in
-$\operatorname{Sym}^2_0(\mathbb{R}^3) \cong \mathbb{R}^5$; equivalently,
+$\mathrm{Sym}^2_0(\mathbb{R}^3) \cong \mathbb{R}^5$; equivalently,
 the projective $\mathbb{RP}^2$-configuration whose quadratic lift produces
 the Petersen ETF is unique up to $O(3) \times S_5$. The proof combines a
 representation-theoretic descent argument (Schur's lemma together with a
@@ -24,7 +24,7 @@ with diagonal $1$, off-diagonal moduli in $\{\sqrt{5}/3,\,1/3\}$
 distributed by the Petersen pattern, positive semidefinite and of rank
 $3$, equals the icosahedral antipodal face-normal Gram matrix up to
 switching $D \in \{\pm 1\}^{10}$ and Petersen-graph automorphism
-$\sigma \in \operatorname{Aut}(K(5,2)) = S_5$.
+$\sigma \in \mathrm{Aut}(K(5,2)) = S_5$.
 
 **Keywords**: Petersen graph, equiangular tight frame, Veronese embedding,
 association scheme, regular two-graph, icosahedral symmetry, Signed
@@ -116,9 +116,9 @@ unique up to switching and Petersen automorphism.
 > \mathbb{R}^{10\times 10}$ be a real symmetric matrix satisfying
 > (i) $H_{ii} = 1$; (ii) $|H_{ij}| = \sqrt{5}/3$ on Petersen edges;
 > (iii) $|H_{ij}| = 1/3$ on complement edges; (iv) $H \succeq 0$;
-> (v) $\operatorname{rank}(H) = 3$. Then there exist
-> $D = \operatorname{diag}(\varepsilon_0,\dots,\varepsilon_9) \in \{\pm 1\}^{10}$
-> and $\sigma \in \operatorname{Aut}(K(5,2)) = S_5$ such that
+> (v) $\mathrm{rank}(H) = 3$. Then there exist
+> $D = \mathrm{diag}(\varepsilon_0,\dots,\varepsilon_9) \in \{\pm 1\}^{10}$
+> and $\sigma \in \mathrm{Aut}(K(5,2)) = S_5$ such that
 >
 > $$
 > H = P_\sigma\,D\,H_{\mathrm{ico}}\,D\,P_\sigma^{\mathsf T},
@@ -175,7 +175,7 @@ What we contribute is:
 
 1. A clean **representation-theoretic descent** for the equivariant
    case (Section 4): Schur's lemma combined with a spectral
-   obstruction on the Veronese surface in $\operatorname{Sym}^2_0(\mathbb{R}^3)$.
+   obstruction on the Veronese surface in $\mathrm{Sym}^2_0(\mathbb{R}^3)$.
 
 2. A **rigidity proof for the compound of five tetrahedra under
    $K_5$-incidence** (Section 5): explicit hinge parameterisation,
@@ -259,7 +259,7 @@ identity on it: $K = 2\,E_1$. $\square$
 
 ### 2.4 The normalised lift and the ETF structure
 
-Let $U_i := v_i v_i^{\mathsf T} - \tfrac{1}{3}I \in \operatorname{Sym}^2_0(\mathbb{R}^3)
+Let $U_i := v_i v_i^{\mathsf T} - \tfrac{1}{3}I \in \mathrm{Sym}^2_0(\mathbb{R}^3)
 \cong \mathbb{R}^5$ (the trace-free part of the Veronese image). A direct
 computation gives $\|U_i\|^2 = 2/3$, so the *unit-normalised* lift is
 $\hat U_i := \sqrt{3/2}\,U_i$, and
@@ -331,7 +331,7 @@ Cameron–Goethals–Seidel–Shult [CGSS76].
 The trace-free Veronese map
 
 $$
-\nu_2 : \mathbb{R}^3 \to \operatorname{Sym}^2_0(\mathbb{R}^3),\quad
+\nu_2 : \mathbb{R}^3 \to \mathrm{Sym}^2_0(\mathbb{R}^3),\quad
   \nu_2(v) := v v^{\mathsf T} - \tfrac{1}{3}I
 $$
 
@@ -342,14 +342,14 @@ $(2/3,\,-1/3,\,-1/3)$.
 ### 3.2 Spectral characterisation
 
 > **Lemma 3.1 (Veronese spectral characterisation).** A trace-free
-> symmetric matrix $U \in \operatorname{Sym}^2_0(\mathbb{R}^3)$ is in the
+> symmetric matrix $U \in \mathrm{Sym}^2_0(\mathbb{R}^3)$ is in the
 > image of $\nu_2$ if and only if its spectrum is
 > $(2/3,\,-1/3,\,-1/3)$.
 
 *Proof.* ($\Rightarrow$) Direct from $vv^{\mathsf T}$ having spectrum
 $(1, 0, 0)$ for unit $v$.
 
-($\Leftarrow$) If $\operatorname{spec}(U) = (2/3,\,-1/3,\,-1/3)$, then
+($\Leftarrow$) If $\mathrm{spec}(U) = (2/3,\,-1/3,\,-1/3)$, then
 $U + I/3$ has spectrum $(1, 0, 0)$: rank-1 PSD, so equals $v v^{\mathsf T}$
 for a unique $\pm v \in S^2$. Therefore $U = \nu_2(v)$. $\square$
 
@@ -382,13 +382,13 @@ the two faithful 3-dimensional real irreducible representations
 $\mathbf 3, \mathbf 3'$ of $A_5$ gives an embedding
 $A_5 \hookrightarrow SO(3)$; the other is obtained by precomposing
 with the outer automorphism that interchanges the two 5-cycle conjugacy
-classes. In either case, applying $\operatorname{Sym}^2$ gives an action
-on $\operatorname{Sym}^2(\mathbb{R}^3) = \mathbf{1} \oplus \mathbf{5}$,
-and the trace-free part $\operatorname{Sym}^2_0(\mathbb{R}^3)$ carries
+classes. In either case, applying $\mathrm{Sym}^2$ gives an action
+on $\mathrm{Sym}^2(\mathbb{R}^3) = \mathbf{1} \oplus \mathbf{5}$,
+and the trace-free part $\mathrm{Sym}^2_0(\mathbb{R}^3)$ carries
 the **unique 5-dimensional irreducible real $A_5$-representation**.
 
 The Petersen graph has abstract automorphism group
-$\operatorname{Aut}(K(5,2)) = S_5$ (classical; see e.g. [God93], [BCN89]).
+$\mathrm{Aut}(K(5,2)) = S_5$ (classical; see e.g. [God93], [BCN89]).
 In the icosahedral geometric realisation, the orientation-preserving
 rotations form the subgroup $A_5 \subset S_5$, acting on the 10 face-pair
 axes by rotations of $\mathbb{R}^3$. The 10-vertex permutation representation of $A_5$
@@ -418,32 +418,32 @@ the same integer character check.
 > are $T = \pm I$.
 
 *Proof.* By Schur's lemma over $\mathbb{R}$, the $\rho$-commutant
-$\operatorname{End}_{A_5}(\mathbb{R}^5)$ is a real division algebra; for
+$\mathrm{End}_{A_5}(\mathbb{R}^5)$ is a real division algebra; for
 the 5-dimensional absolutely irreducible representation it equals
 $\mathbb{R}$. Isometric scalars are $\pm 1$. $\square$
 
 ### 4.3 The $T = -I$ obstruction
 
-The Veronese surface $\nu_2(\mathbb{RP}^2) \subset \operatorname{Sym}^2_0(\mathbb{R}^3)$
+The Veronese surface $\nu_2(\mathbb{RP}^2) \subset \mathrm{Sym}^2_0(\mathbb{R}^3)$
 is **not** symmetric under $T = -I$.
 
 > **Lemma 4.2.** If $U \in \nu_2(\mathbb{RP}^2)$, then $-U \notin
 > \nu_2(\mathbb{RP}^2)$.
 
-*Proof.* By Lemma 3.1, $\operatorname{spec}(U) = (2/3,\,-1/3,\,-1/3)$, so
-$\operatorname{spec}(-U) = (-2/3,\,1/3,\,1/3)$ and
-$\operatorname{spec}(-U + I/3) = (-1/3,\,2/3,\,2/3)$, which contains a
+*Proof.* By Lemma 3.1, $\mathrm{spec}(U) = (2/3,\,-1/3,\,-1/3)$, so
+$\mathrm{spec}(-U) = (-2/3,\,1/3,\,1/3)$ and
+$\mathrm{spec}(-U + I/3) = (-1/3,\,2/3,\,2/3)$, which contains a
 negative eigenvalue. Hence $-U + I/3$ is not PSD, so $-U$ is not in
 the image of $\nu_2$. $\square$
 
 ### 4.4 The equivariant descent theorem
 
 > **Theorem 4.3 (Equivariant Veronese descent rigidity).** Let
-> $\{U_i^{(1)}\}, \{U_i^{(2)}\} \subset \operatorname{Sym}^2_0(\mathbb{R}^3)$
+> $\{U_i^{(1)}\}, \{U_i^{(2)}\} \subset \mathrm{Sym}^2_0(\mathbb{R}^3)$
 > be two 10-element families, each isometric to the Petersen ETF of
 > Theorem 1, lying on the Veronese surface, and each $A_5$-equivariant
 > under the natural Petersen-graph action. Then there exists $h \in O(3)$
-> such that $U_i^{(2)} = \operatorname{Sym}^2(h)\cdot U_i^{(1)}$ for all $i$.
+> such that $U_i^{(2)} = \mathrm{Sym}^2(h)\cdot U_i^{(1)}$ for all $i$.
 
 *Proof.* The classical uniqueness (Theorem 2.3) gives an isometric
 isomorphism between the two systems. Because the $5$-dimensional
@@ -493,7 +493,7 @@ Each Petersen vertex lies in exactly $2$ of the $5$ stars.
 > 4-cocliques:
 >
 > $$
-> \ker K = \operatorname{span}\left\{\mathbf{1}_{C_1},\ldots,\mathbf{1}_{C_5}\right\}.
+> \ker K = \mathrm{span}\left\{\mathbf{1}_{C_1},\ldots,\mathbf{1}_{C_5}\right\}.
 > $$
 
 *Proof.* By Theorem 1, $K = 2 E_1$ has rank $5$, so
@@ -645,7 +645,7 @@ $T_k$ is labelled with which Kneser-pair $\{k,l\}$.
 > of admissible labelings — bijections from the $10$ shared axes onto
 > $\binom{\{0,\dots,4\}}{2}$ compatible with the $K_5$-incidence on the
 > five tetrahedra. Then $\mathcal{L}$ is a single orbit under
-> $\operatorname{Aut}(K(5,2)) = S_5$.*
+> $\mathrm{Aut}(K(5,2)) = S_5$.*
 
 *Proof.* For $\lambda_1, \lambda_2 \in \mathcal{L}$, set
 $\sigma = \lambda_2 \circ \lambda_1^{-1}$, a permutation of
@@ -656,7 +656,7 @@ $\lambda_2$ realise the same $K_5$-incidence structure, so $\sigma$
 preserves the "disjoint vs intersecting" relation on
 $\binom{\{0,\ldots,4\}}{2}$ — that is, the Petersen edge set.
 
-Hence $\sigma \in \operatorname{Aut}(K(5,2)) = S_5$, with $S_5$ acting
+Hence $\sigma \in \mathrm{Aut}(K(5,2)) = S_5$, with $S_5$ acting
 on $\{0,\ldots,4\}$ and inducing the action on 2-subsets in the natural
 way. Concretely, $\sigma(\{a,b\}) = \{\tau(a),\tau(b)\}$ for some
 $\tau \in S_5$, so $\lambda_2 = \tau \cdot \lambda_1$. $\square$
@@ -755,7 +755,7 @@ of $(\varepsilon, \delta) \in \{\pm 1\}^4 \times \{\pm 1\}^6$:
 
 | Case type | Count $n$ | Outcome |
 |-----------|-----------|---------|
-| Inconsistent linear system $(\operatorname{rank} L < \operatorname{rank}[L\mid b])$ | $992$ (96.9%) | no solution |
+| Inconsistent linear system $(\mathrm{rank} L < \mathrm{rank}[L\mid b])$ | $992$ (96.9%) | no solution |
 | Rank-$7$ linear $+$ canonical quadratic | $16$ (1.6%) | $2$ real roots each |
 | Full-rank linear $+$ unit-norm invalid | $16$ (1.6%) | no solution |
 
@@ -858,7 +858,7 @@ for some $\sigma \in S_5$ and $D \in \{\pm 1\}^{10}$. $\square$
 ### 7.1 What forces Petersen and $A_5$
 
 In the icosahedral case, the trace-free symmetric square
-$\operatorname{Sym}^2_0(\mathbb{R}^3)$ is irreducible as an $A_5$-module,
+$\mathrm{Sym}^2_0(\mathbb{R}^3)$ is irreducible as an $A_5$-module,
 which is the representation-theoretic reason Schur's lemma applies so
 cleanly here. The finite census in
 [`platonic_census.py`](../scripts/platonic_census.py) shows that, among
