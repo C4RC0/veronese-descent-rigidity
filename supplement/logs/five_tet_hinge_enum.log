@@ -1,0 +1,48 @@
+Building symbolic Tks...
+Building 18 hinge equations symbolically...
+Extracting L matrix (constant in eps, delta) and b vector...
+L_expr free symbols: {d14, d13, d23, d34, d24, d12}
+b_expr free symbols: {eps3, d23, d34, d12, eps4, d14, d13, eps2, d24, eps1}
+
+======================================================================
+Scanning 1024 (eps, delta) cases for canonical labeling...
+  EXACT_RANK_MODE = True  (False = fast 20-digit float; True = exact sympy)
+  EXACT_VERIFY_SAMPLE = True  (double-check consistent cases with exact rank)
+======================================================================
+  Done eps_case 4/16  (256/1024 total)    elapsed 5.1s  eta 15.2s
+  Done eps_case 8/16  (512/1024 total)    elapsed 10.1s  eta 10.1s
+  Done eps_case 12/16  (768/1024 total)    elapsed 15.1s  eta 5.0s
+  Done eps_case 16/16  (1024/1024 total)    elapsed 20.2s  eta 0.0s
+
+Total scan time: 20.2s
+
+======================================================================
+Case summary:
+======================================================================
+  Total cases scanned: 1024  (expected 1024)
+
+  Partition (disjoint categories):
+    inconsistent_linear                   992  ( 96.9%)
+    full_rank_unit_norm_invalid            16  (  1.6%)
+    rank7_canonical_quadratic              16  (  1.6%)
+    rank7_other_quadratic                   0  (  0.0%)
+    rank7_unit_norm_invalid                 0  (  0.0%)
+    consistent_lower_rank                   0  (  0.0%)
+    consistent_full_rank_valid              0  (  0.0%)
+    TOTAL                                1024
+
+  Diagnostics (may overlap; do not sum with partition):
+    consistent_rank7_total                 16
+    canonical_quadratic_total              16
+
+Canonical-quadratic cases: 16
+First few examples:
+  eps=---- delta=------  quadratic = (0.2500, 0.0000, -0.9375)
+  eps=---+ delta=--+-++  quadratic = (0.2500, 0.0000, -0.9375)
+  eps=--+- delta=-+-+-+  quadratic = (0.2500, 0.0000, -0.9375)
+  eps=--++ delta=-++++-  quadratic = (0.2500, 0.0000, -0.9375)
+  eps=-+-- delta=+--++-  quadratic = (0.2500, 0.0000, -0.9375)
+
+======================================================================
+✓ ALL consistent cases give the canonical quadratic
+✓ B' bridge: complete labeling closure verified

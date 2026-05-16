@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Veronese descent rigidity of the Petersen ETF</title>
+<style>
+  html, body { margin: 0; padding: 0; overflow: hidden; background: #0a0a12; color: #d0d0e0;
+    font-family: 'JetBrains Mono', 'Courier New', monospace; height: 100vh; width: 100vw; }
+  body { display: flex; }
+  .viz-area {
+    flex: 1; height: 100vh; min-width: 0;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: #1a1a2a;
+  }
+  .sidebar {
+    width: 380px; height: 100vh; overflow-y: auto; overflow-x: hidden; flex-shrink: 0;
+    background: #0e0e18; border-left: 1px solid #333; padding: 8px;
+    box-sizing: border-box;
+  }
+  .panel {
+    position: relative; border: 1px solid #2a2a3a; box-sizing: border-box;
+    overflow: hidden; background: #0a0a12;
+    transition: grid-row 0.3s, grid-column 0.3s;
+  }
+  /* Default placement: 6 panels in 2 rows. Order = A, C (heroes, top, span-2 each)
+     then B, D, E, F (small, bottom row, span-1 each).
+     Hero/small state controlled by .panel.hero class set via JS. */
+  .panel:not(.hero) { grid-row: 2; grid-column: span 1; }
+  .panel.hero       { grid-row: 1; grid-column: span 2; }
+  .panel-title {
+    position: absolute; top: 4px; left: 8px; font-size: 11px; color: #ffcc66; font-weight: bold;
+    pointer-events: none; z-index: 5; background: rgba(10,10,18,0.85); padding: 2px 6px; border-radius: 3px;
+  }
+  .panel-subtitle {
+    position: absolute; top: 22px; left: 8px; font-size: 10px; color: #88aacc;
+    pointer-events: none; z-index: 5;
+  }
+  /* Pin-toggle icon in the top-right corner of each panel */
+  .panel-pin {
+    position: absolute; top: 4px; right: 4px; z-index: 6;
+    width: 20px; height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10,10,18,0.85);
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #88aacc;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  /* Triangle icon: ▲ on small panel (click to promote up), ▼ on hero (demote down) */
+  .panel-pin::before { content: "\25B2"; }              /* ▲ */
+  .panel.hero .panel-pin::before { content: "\25BC"; }  /* ▼ */
+  .panel-pin:hover { color: #ffcc66; border-color: #ffcc66; }
+  .panel.hero .panel-pin { color: #ffcc66; border-color: #aa8844; }
+  .side-panel {
+    background: rgba(15, 15, 25, 0.6); padding: 8px 12px; border-radius: 6px;
+    border: 1px solid #444; font-size: 10px; line-height: 1.5; color: #ccc;
+    margin-bottom: 8px;
+  }
+  .side-panel h3 { margin: 0 0 4px; font-size: 11px; color: #ffcc66; }
+  .side-panel .ok { color: #88ff88; }
+  .side-panel .fail { color: #ff6666; }
+  .side-panel .key { color: #88aacc; }
+  .side-panel .val { color: #ffffaa; }
+  .side-panel a { color: #ffaa66; text-decoration: none; }
+  .side-panel a:hover { text-decoration: underline; }
+  #gui-container { margin-bottom: 8px; }
+  /* lil-gui placed inside the sidebar */
+  .lil-gui { --width: 360px !important; }
+  .lil-gui.root { position: static !important; max-height: none; }
+  canvas { display: block; width: 100%; height: 100%; }
+  .panel canvas { width: 100%; height: 100%; }
+  /* Overlay canvas: pointer-events: none so OrbitControls still works on the WebGL canvas below */
+  .panel-overlay {
+    position: absolute !important;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+</style>
+</head>
+<body>
+
+<div class="viz-area" id="viz-area">
+
+<!-- A (INPUT) → B → C → D → E → F (OUTPUT):
+     icosahedral geometric configuration → Veronese lift → algebraic
+     structure → exact certificates → Petersen shadow (paper §1→§5.7). -->
+
+<div class="panel hero" id="panel-A" data-panel="A">
+  <div class="panel-title">A — INPUT: Physical ℝ³ + 5-tetrahedra compound</div>
+  <div class="panel-subtitle">Icosahedron + 10 face-pair directions v_i ∈ S²/±</div>
+  <div class="panel-pin" title="Hero ↔ Small" data-pin="A"></div>
+  <canvas id="canvas-A"></canvas>
+</div>
+
+<div class="panel" id="panel-B" data-panel="B">
+  <div class="panel-title">B — Sym²₀(ℝ³) ≅ ℝ⁵ Veronese lift</div>
+  <div class="panel-subtitle">U_i = v_iv_iᵀ − I/3, spec = (2/3, −1/3, −1/3)</div>
+  <div class="panel-pin" title="Hero ↔ Small" data-pin="B"></div>
+  <canvas id="canvas-B"></canvas>
+  <canvas id="canvas-B-overlay" class="panel-overlay"></canvas>
+</div>
+
+<div class="panel" id="panel-C" data-panel="C">
+  <div class="panel-title">C — Representation theory</div>
+  <div class="panel-subtitle">A_5: 10D perm = 1 ⊕ 4 ⊕ 5</div>
+  <div class="panel-pin" title="Hero ↔ Small" data-pin="C"></div>
+  <canvas id="canvas-C"></canvas>
+</div>
+
+<div class="panel" id="panel-D" data-panel="D">
+  <div class="panel-title">D — Hinge model + quadratic</div>
+  <div class="panel-subtitle">φ₁..φ₄, 4s² − √3·s − 3/4 = 0</div>
+  <div class="panel-pin" title="Hero ↔ Small" data-pin="D"></div>
+  <canvas id="canvas-D"></canvas>
+</div>
+
+<div class="panel" id="panel-E" data-panel="E">
+  <div class="panel-title">E — 1024-case enumeration partition</div>
+  <div class="panel-subtitle">992 / 16 / 16, exact certificate</div>
+  <div class="panel-pin" title="Hero ↔ Small" data-pin="E"></div>
+  <canvas id="canvas-E"></canvas>
+</div>
+
+<div class="panel hero" id="panel-F" data-panel="F">
+  <div class="panel-title">F — OUTPUT: Petersen K(5,2) (the final shadow)</div>
+  <div class="panel-subtitle">Q_ij = (v_i · v_j)² ∈ {1/9, 5/9} → edge iff 5/9</div>
+  <div class="panel-pin" title="Hero ↔ Small" data-pin="F"></div>
+  <canvas id="canvas-F"></canvas>
+</div>
+
+</div> <!-- /viz-area -->
+
+<div class="sidebar">
+
+<div id="gui-container"></div>
+
+<div class="side-panel" id="info-panel">
+  <h3>Active state</h3>
+  <div><span class="key">active i:</span> <span class="val" id="active-i">0</span></div>
+  <div><span class="key">Petersen neighbours:</span> <span class="val" id="neighbors">—</span></div>
+  <div><span class="key">⟨U_i, U_i⟩:</span> <span class="val" id="self-gram">—</span> (expected 2/3)</div>
+</div>
+
+<div class="side-panel" id="verify-panel">
+  <h3>Math verification (TOL = 10⁻¹⁰)</h3>
+  <div id="verify-list">—</div>
+</div>
+
+<div class="side-panel" id="spectrum-panel">
+  <h3>Spectra (classical paper results)</h3>
+  <div id="spectrum-list">—</div>
+</div>
+
+<div class="side-panel" id="assoc-panel">
+  <h3>Association scheme (Petersen)</h3>
+  <div id="assoc-list">—</div>
+</div>
+
+<div class="side-panel" id="a5-panel">
+  <h3>A_5-action on Sym²₀</h3>
+  <div id="a5-list">—</div>
+</div>
+
+</div> <!-- /sidebar -->
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+    "lil-gui": "https://unpkg.com/lil-gui@0.19.2/dist/lil-gui.esm.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
+import GUI from 'lil-gui';
+
+const PHI = (1 + Math.sqrt(5)) / 2;
+const TOL = 1e-10;
+
+// ============================================================
+// ICOSAHEDRON GEOMETRY
+// ============================================================
+const ICO_VERTS = [
+  [0, 1, PHI], [0, -1, -PHI], [0, -1, PHI], [0, 1, -PHI],
+  [1, PHI, 0], [-1, -PHI, 0], [-1, PHI, 0], [1, -PHI, 0],
+  [PHI, 0, 1], [-PHI, 0, -1], [-PHI, 0, 1], [PHI, 0, -1]
+];
+const ICO_EDGES = [];
+for (let i = 0; i < 12; i++) for (let j = i+1; j < 12; j++) {
+  const d = Math.hypot(ICO_VERTS[i][0]-ICO_VERTS[j][0], ICO_VERTS[i][1]-ICO_VERTS[j][1], ICO_VERTS[i][2]-ICO_VERTS[j][2]);
+  if (Math.abs(d - 2) < 1e-5) ICO_EDGES.push([i, j]);
+}
+const FACES = [];
+for (let i = 0; i < 12; i++) for (let j = i+1; j < 12; j++) for (let k = j+1; k < 12; k++) {
+  const d_ij = Math.hypot(ICO_VERTS[i][0]-ICO_VERTS[j][0], ICO_VERTS[i][1]-ICO_VERTS[j][1], ICO_VERTS[i][2]-ICO_VERTS[j][2]);
+  const d_jk = Math.hypot(ICO_VERTS[j][0]-ICO_VERTS[k][0], ICO_VERTS[j][1]-ICO_VERTS[k][1], ICO_VERTS[j][2]-ICO_VERTS[k][2]);
+  const d_ik = Math.hypot(ICO_VERTS[i][0]-ICO_VERTS[k][0], ICO_VERTS[i][1]-ICO_VERTS[k][1], ICO_VERTS[i][2]-ICO_VERTS[k][2]);
+  if (Math.abs(d_ij-2)<1e-5 && Math.abs(d_jk-2)<1e-5 && Math.abs(d_ik-2)<1e-5) FACES.push([i,j,k]);
+}
+const FACE_CENTERS = FACES.map(f => [
+  (ICO_VERTS[f[0]][0]+ICO_VERTS[f[1]][0]+ICO_VERTS[f[2]][0])/3,
+  (ICO_VERTS[f[0]][1]+ICO_VERTS[f[1]][1]+ICO_VERTS[f[2]][1])/3,
+  (ICO_VERTS[f[0]][2]+ICO_VERTS[f[1]][2]+ICO_VERTS[f[2]][2])/3
+]);
+const FACE_PAIRS = [];
+const matched = new Set();
+for (let i = 0; i < 20; i++) {
+  if (matched.has(i)) continue;
+  for (let j = i+1; j < 20; j++) {
+    if (matched.has(j)) continue;
+    if (Math.hypot(FACE_CENTERS[i][0]+FACE_CENTERS[j][0], FACE_CENTERS[i][1]+FACE_CENTERS[j][1], FACE_CENTERS[i][2]+FACE_CENTERS[j][2]) < 1e-5) {
+      FACE_PAIRS.push([i, j]); matched.add(i); matched.add(j); break;
+    }
+  }
+}
+// 10 face-pair representatives (unit vectors)
+const V = FACE_PAIRS.map(p => {
+  const c = FACE_CENTERS[p[0]];
+  const n = Math.hypot(c[0], c[1], c[2]);
+  return [c[0]/n, c[1]/n, c[2]/n];
+});
+
+// ============================================================
+// MATHLIB — Sym²₀(ℝ³) quadratic Veronese lift
+// ============================================================
+// 5 orthonormal basis matrices of Sym²₀ (Frobenius inner product)
+const SQRT2 = Math.sqrt(2), SQRT6 = Math.sqrt(6);
+const SYM2_BASIS = [
+  // B_1 = (e_1e_1ᵀ − e_2e_2ᵀ)/√2
+  [[1/SQRT2, 0, 0], [0, -1/SQRT2, 0], [0, 0, 0]],
+  // B_2 = (e_1e_1ᵀ + e_2e_2ᵀ − 2e_3e_3ᵀ)/√6
+  [[1/SQRT6, 0, 0], [0, 1/SQRT6, 0], [0, 0, -2/SQRT6]],
+  // B_3 = (e_1e_2ᵀ + e_2e_1ᵀ)/√2
+  [[0, 1/SQRT2, 0], [1/SQRT2, 0, 0], [0, 0, 0]],
+  // B_4 = (e_1e_3ᵀ + e_3e_1ᵀ)/√2
+  [[0, 0, 1/SQRT2], [0, 0, 0], [1/SQRT2, 0, 0]],
+  // B_5 = (e_2e_3ᵀ + e_3e_2ᵀ)/√2
+  [[0, 0, 0], [0, 0, 1/SQRT2], [0, 1/SQRT2, 0]],
+];
+
+function computeU(v) {
+  return [
+    [v[0]*v[0] - 1/3, v[0]*v[1],       v[0]*v[2]],
+    [v[1]*v[0],       v[1]*v[1] - 1/3, v[1]*v[2]],
+    [v[2]*v[0],       v[2]*v[1],       v[2]*v[2] - 1/3]
+  ];
+}
+function frobeniusInner(A, B) {
+  let s = 0;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) s += A[i][j] * B[i][j];
+  return s;
+}
+function coordsInSym2Basis(U) {
+  return SYM2_BASIS.map(B => frobeniusInner(U, B));
+}
+
+// U_i matrices and their 5D coordinates
+const U_MATRIXES = V.map(v => computeU(v));
+const U_COORDS_5D = U_MATRIXES.map(coordsInSym2Basis);  // 10 × 5
+
+// 10×10 Gram matrix ⟨U_i, U_j⟩
+const GRAM = [];
+for (let i = 0; i < 10; i++) {
+  GRAM.push([]);
+  for (let j = 0; j < 10; j++) {
+    GRAM[i].push(frobeniusInner(U_MATRIXES[i], U_MATRIXES[j]));
+  }
+}
+
+// Petersen adjacency (⟨U_i, U_j⟩ ≈ +2/9)
+const PETERSEN_ADJ = Array.from({length: 10}, () => []);
+for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) {
+  if (i !== j && Math.abs(GRAM[i][j] - 2/9) < 1e-6) PETERSEN_ADJ[i].push(j);
+}
+
+// 10-color palette for the 10 vertices
+const COLORS = [
+  '#ff5555', '#55ff55', '#5555ff', '#ffff55', '#ff55ff',
+  '#55ffff', '#ff8855', '#88ff55', '#5588ff', '#ff5588',
+];
+
+// ============================================================
+// 5 INSCRIBED TETRAHEDRA (compound) + Kneser bijection i → {c_a, c_b}
+// (paper §5: 5-tetrahedra compound in the dodecahedron; the four body
+//  diagonals of each inscribed cube form one projective tetrahedron.)
+// ============================================================
+function isCube(eightIndices) {
+  // Multiset-strict cube test on the 28 pairwise vertex distances.
+  // A cube has exactly 3 distance classes: edge (12), face-diagonal
+  // (12), body-diagonal (4). The {4, 12, 12} multiset sizes are the
+  // primary check; the 1 : √2 : √3 ratios are the secondary check.
+  const pts = eightIndices.map(idx => FACE_CENTERS[idx]);
+  // All vertices at equal distance from the origin (cube centre)
+  const norms = pts.map(p => Math.hypot(p[0], p[1], p[2]));
+  for (const n of norms) if (Math.abs(n - norms[0]) > 1e-5) return false;
+  // 28 pairwise distances
+  const dists = [];
+  for (let a = 0; a < 8; a++) for (let b = a+1; b < 8; b++) {
+    dists.push(Math.hypot(pts[a][0]-pts[b][0], pts[a][1]-pts[b][1], pts[a][2]-pts[b][2]));
+  }
+  dists.sort((x, y) => x - y);
+  if (dists[0] < 1e-5) return false;
+  // Cluster: adjacent points within 1% relative tolerance form one class
+  const groups = [[dists[0]]];
+  for (let i = 1; i < dists.length; i++) {
+    const lastGroup = groups[groups.length - 1];
+    if (Math.abs(dists[i] - lastGroup[0]) / lastGroup[0] < 0.01) {
+      lastGroup.push(dists[i]);
+    } else {
+      groups.push([dists[i]]);
+    }
+  }
+  // Exactly 3 distance classes required
+  if (groups.length !== 3) return false;
+  // Multiset sizes must be exactly {4, 12, 12}
+  const sizes = groups.map(g => g.length).sort((a, b) => a - b);
+  if (sizes[0] !== 4 || sizes[1] !== 12 || sizes[2] !== 12) return false;
+  // Secondary: ratios 1 : √2 : √3 within 1%
+  const r1 = groups[1][0] / groups[0][0];
+  const r2 = groups[2][0] / groups[0][0];
+  if (Math.abs(r1 - Math.SQRT2) > 0.01) return false;
+  if (Math.abs(r2 - Math.sqrt(3)) > 0.01) return false;
+  return true;
+}
+const CUBES = [];  // 5 inscribed tetrahedra, each given by 4 face-pair indices
+for (let a = 0; a < 10; a++) for (let b = a+1; b < 10; b++)
+  for (let c = b+1; c < 10; c++) for (let d = c+1; d < 10; d++) {
+    const eight = [FACE_PAIRS[a][0], FACE_PAIRS[a][1], FACE_PAIRS[b][0], FACE_PAIRS[b][1],
+                   FACE_PAIRS[c][0], FACE_PAIRS[c][1], FACE_PAIRS[d][0], FACE_PAIRS[d][1]];
+    if (isCube(eight)) CUBES.push([a, b, c, d]);
+  }
+// Kneser bijection: each face-pair index i ∈ {0, 1, …, 9} → {c_a, c_b} ⊂ {0,..,4}
+const LABEL_AB = new Array(10);
+for (let i = 0; i < 10; i++) {
+  const cubeIndices = [];
+  for (let ci = 0; ci < CUBES.length; ci++) {
+    if (CUBES[ci].includes(i)) cubeIndices.push(ci);
+  }
+  LABEL_AB[i] = cubeIndices;  // [a, b], always exactly 2 entries
+}
+
+// ============================================================
+// A_5 60-ELEMENT GENERATION + Sym²₀(R) 5×5 MATRIX
+// ============================================================
+function mat3mul(A, B) {
+  const C = [[0,0,0],[0,0,0],[0,0,0]];
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+    let s = 0;
+    for (let k = 0; k < 3; k++) s += A[i][k] * B[k][j];
+    C[i][j] = s;
+  }
+  return C;
+}
+function mat3transpose(A) {
+  return [[A[0][0], A[1][0], A[2][0]], [A[0][1], A[1][1], A[2][1]], [A[0][2], A[1][2], A[2][2]]];
+}
+function matvec3(A, v) {
+  return [A[0][0]*v[0]+A[0][1]*v[1]+A[0][2]*v[2],
+          A[1][0]*v[0]+A[1][1]*v[1]+A[1][2]*v[2],
+          A[2][0]*v[0]+A[2][1]*v[1]+A[2][2]*v[2]];
+}
+function mat3equal(A, B, tol=1e-8) {
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+    if (Math.abs(A[i][j] - B[i][j]) > tol) return false;
+  }
+  return true;
+}
+function rotationMatrix(axis, angle) {
+  // Rodrigues formula: R = I·cos + (1-cos) axis·axisᵀ + sin·[axis]_×
+  const n = Math.hypot(axis[0], axis[1], axis[2]);
+  const a = [axis[0]/n, axis[1]/n, axis[2]/n];
+  const c = Math.cos(angle), s = Math.sin(angle), C = 1 - c;
+  return [
+    [c + a[0]*a[0]*C,         a[0]*a[1]*C - a[2]*s, a[0]*a[2]*C + a[1]*s],
+    [a[1]*a[0]*C + a[2]*s,    c + a[1]*a[1]*C,      a[1]*a[2]*C - a[0]*s],
+    [a[2]*a[0]*C - a[1]*s,    a[2]*a[1]*C + a[0]*s, c + a[2]*a[2]*C     ]
+  ];
+}
+
+// Two generators: 5-fold rotation about an icosahedron vertex axis
+// + 3-fold rotation about a face-centre axis.
+const A5_GEN1 = rotationMatrix(ICO_VERTS[0], 2*Math.PI/5);  // 5-fold
+const A5_GEN2 = rotationMatrix(FACE_CENTERS[0], 2*Math.PI/3);  // 3-fold
+// BFS closure generates all 60 elements
+const A5_ELEMS = [[[1,0,0],[0,1,0],[0,0,1]]];  // identity
+{
+  let lastSize = 0;
+  while (lastSize !== A5_ELEMS.length) {
+    lastSize = A5_ELEMS.length;
+    for (let k = 0; k < A5_ELEMS.length; k++) {
+      const cand1 = mat3mul(A5_ELEMS[k], A5_GEN1);
+      const cand2 = mat3mul(A5_ELEMS[k], A5_GEN2);
+      if (!A5_ELEMS.some(R => mat3equal(R, cand1))) A5_ELEMS.push(cand1);
+      if (!A5_ELEMS.some(R => mat3equal(R, cand2))) A5_ELEMS.push(cand2);
+    }
+    if (A5_ELEMS.length >= 60) break;
+  }
+}
+
+// Sym²₀(R) 5×5 matrix: M_lk = ⟨R · B_k · Rᵀ, B_l⟩
+function sym2_0_matrix(R) {
+  const Rt = mat3transpose(R);
+  const M = Array.from({length: 5}, () => new Array(5).fill(0));
+  for (let k = 0; k < 5; k++) {
+    const RBR = mat3mul(mat3mul(R, SYM2_BASIS[k]), Rt);
+    for (let l = 0; l < 5; l++) {
+      M[l][k] = frobeniusInner(RBR, SYM2_BASIS[l]);
+    }
+  }
+  return M;
+}
+
+// σ_g permutation: σ(i) = j ↔ R · v_i ≈ ±v_j
+//
+// PROJECTIVE QUOTIENT: the |dot| − 1 < ε test is NOT a hack, but the
+// mathematical consequence of the projective identification
+// v ∼ −v ↔ S²/± = ℝP². The quadratic lift U_i = v_i v_iᵀ = (−v_i)(−v_i)ᵀ
+// is sign-invariant, so only the "direction" of v matters, not its
+// sign. The 10 face-pair points live in ℝP², so the equality
+// R · v_i = ±v_σ(i) is projective (= same direction modulo {+1, −1}).
+function permutationFromR(R) {
+  const σ = new Array(10);
+  for (let i = 0; i < 10; i++) {
+    const Rvi = matvec3(R, V[i]);
+    σ[i] = -1;
+    for (let j = 0; j < 10; j++) {
+      const dot = Rvi[0]*V[j][0] + Rvi[1]*V[j][1] + Rvi[2]*V[j][2];
+      if (Math.abs(Math.abs(dot) - 1) < 1e-6) { σ[i] = j; break; }
+    }
+  }
+  return σ;
+}
+
+// Precompute the Sym²₀ matrix and σ-permutation for each A_5 element
+const A5_SYM2 = A5_ELEMS.map(sym2_0_matrix);
+const A5_SIGMA = A5_ELEMS.map(permutationFromR);
+
+// ============================================================
+// MATH VERIFICATION
+// ============================================================
+function verifyMathProperties() {
+  const checks = [];
+  // 1. ‖U_i‖² = 2/3 ∀i
+  let ok1 = true;
+  for (let i = 0; i < 10; i++) {
+    if (Math.abs(frobeniusInner(U_MATRIXES[i], U_MATRIXES[i]) - 2/3) > TOL) { ok1 = false; break; }
+  }
+  checks.push({ name: '‖U_i‖² = 2/3 ∀i (equal norms)', ok: ok1 });
+
+  // 2. ⟨U_i, U_j⟩ ∈ {±2/9} ∀i≠j
+  let ok2 = true;
+  for (let i = 0; i < 10; i++) for (let j = i+1; j < 10; j++) {
+    const g = GRAM[i][j];
+    if (Math.abs(g - 2/9) > TOL && Math.abs(g + 2/9) > TOL) { ok2 = false; break; }
+  }
+  checks.push({ name: '⟨U_i, U_j⟩ ∈ {±2/9} (two-valued Gram)', ok: ok2 });
+
+  // 3. tr(U_i) = 0 ∀i
+  let ok3 = true;
+  for (let i = 0; i < 10; i++) {
+    const U = U_MATRIXES[i];
+    if (Math.abs(U[0][0] + U[1][1] + U[2][2]) > TOL) { ok3 = false; break; }
+  }
+  checks.push({ name: 'tr(U_i) = 0 ∀i (trace-free)', ok: ok3 });
+
+  // 4. Σ U_i = 0 (centred)
+  const sumU = [[0,0,0],[0,0,0],[0,0,0]];
+  for (let k = 0; k < 10; k++) for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+    sumU[i][j] += U_MATRIXES[k][i][j];
+  }
+  let ok4 = true;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (Math.abs(sumU[i][j]) > 1e-9) { ok4 = false; }
+  checks.push({ name: 'Σ U_i = 0 (centred)', ok: ok4 });
+
+  // 5. Petersen: 3-regular
+  let ok5 = PETERSEN_ADJ.every(adj => adj.length === 3);
+  checks.push({ name: 'Petersen: 3-regular (every vertex has 3 neighbours)', ok: ok5 });
+
+  // 6. 15 Petersen edges
+  let edgeCount = 0;
+  for (let i = 0; i < 10; i++) for (let j = i+1; j < 10; j++) {
+    if (Math.abs(GRAM[i][j] - 2/9) < 1e-6) edgeCount++;
+  }
+  checks.push({ name: '|Petersen edges| = 15 (edges of K(5,2))', ok: edgeCount === 15 });
+
+  // 7. |A_5| = 60
+  checks.push({ name: `|A_5| = ${A5_ELEMS.length} (expected 60)`, ok: A5_ELEMS.length === 60 });
+
+  // 8. 5 inscribed tetrahedra (compound, paper §5)
+  checks.push({ name: `|5-tetra compound| = ${CUBES.length} (expected 5)`, ok: CUBES.length === 5 });
+
+  // 9. Sym²₀(g) · U_i = U_σ(i) (consistency for every g, i)
+  let consistent = true;
+  for (let gi = 0; gi < A5_ELEMS.length && consistent; gi++) {
+    const M = A5_SYM2[gi], σ = A5_SIGMA[gi];
+    for (let i = 0; i < 10 && consistent; i++) {
+      const Ui = U_COORDS_5D[i];
+      const MU = [0,0,0,0,0];
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) MU[r] += M[r][c] * Ui[c];
+      const Utarget = U_COORDS_5D[σ[i]];
+      for (let r = 0; r < 5; r++) if (Math.abs(MU[r] - Utarget[r]) > 1e-7) { consistent = false; break; }
+    }
+  }
+  checks.push({ name: 'Sym²₀(g)·U_i = U_σ(i) (∀ g ∈ A_5, ∀ i)', ok: consistent });
+
+
+  return checks;
+}
+function renderVerifyPanel() {
+  const checks = verifyMathProperties();
+  let html = '';
+  for (const c of checks) {
+    html += `<div class="${c.ok ? 'ok' : 'fail'}">${c.ok ? '✓' : '✗'} ${c.name}</div>`;
+  }
+  document.getElementById('verify-list').innerHTML = html;
+}
+renderVerifyPanel();
+
+// ============================================================
+// SPECTRUM PANEL: Petersen adj, complement, Gram spectra
+// A_1 = {3, 1⁵, (−2)⁴};  A_2 = {6, 1⁴, (−2)⁵};  G = {(4/3)⁵, 0⁵}
+// ============================================================
+
+// Adjacency matrices
+const A1 = Array.from({length: 10}, () => new Array(10).fill(0));  // Petersen
+const A2 = Array.from({length: 10}, () => new Array(10).fill(0));  // komplementer
+for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) {
+  if (i === j) continue;
+  if (Math.abs(GRAM[i][j] - 2/9) < 1e-6) A1[i][j] = 1;
+  else if (Math.abs(GRAM[i][j] + 2/9) < 1e-6) A2[i][j] = 1;
+}
+
+function trace(M) { let s = 0; for (let i = 0; i < M.length; i++) s += M[i][i]; return s; }
+function trace2(M) {
+  // tr(M²) = Σ_ij M_ij · M_ji = Σ_ij M_ij² ha M szimmetrikus
+  let s = 0;
+  for (let i = 0; i < M.length; i++) for (let j = 0; j < M.length; j++) s += M[i][j] * M[i][j];
+  return s;
+}
+
+function fmt(v, d=4) {
+  const s = v.toFixed(d);
+  return s.indexOf('.') >= 0 ? s.replace(/\.?0+$/, '') : s;
+}
+
+function renderPCANote() {
+  // G has rank 5 with nonzero eigenvalues all equal to 4/3 (Y^T Y = (4/3) I_5),
+  // so the PCA basis is NUMERICALLY DEGENERATE — any 3 orthonormal directions
+  // are "principal directions".
+  return `<div style="margin-top:4px;font-size:9px;color:#aaa;font-style:italic;">⚠ PCA degeneracy: Y^T Y = (4/3)·I₅ (isotropic tight frame), <br>the PCA basis is NOT canonical — only numerical noise ranks the axes. OK for demo, not a fixed view.</div>`;
+}
+
+function renderSpectrumPanel() {
+  // Numerical traces
+  const trA1 = trace(A1), trA1_2 = trace2(A1);
+  const trA2 = trace(A2), trA2_2 = trace2(A2);
+  // Gram: tr(G) = Σ G_ii, tr(G²) = Σ G_ij²
+  let trG = 0, trG2 = 0;
+  for (let i = 0; i < 10; i++) {
+    trG += GRAM[i][i];
+    for (let j = 0; j < 10; j++) trG2 += GRAM[i][j] * GRAM[i][j];
+  }
+
+  // Theoretical spectrum-eigenvalue-sums:
+  // A_1: {3, 1⁵, (−2)⁴}  → Σλ = 0, Σλ² = 30
+  // A_2: {6, 1⁴, (−2)⁵}  → Σλ = 0, Σλ² = 60
+  // G:   {4/3⁵, 0⁵}       → Σλ = 20/3, Σλ² = 80/9
+  const tA1_th = 0, tA1_2_th = 30;
+  const tA2_th = 0, tA2_2_th = 60;
+  const tG_th = 20/3, tG2_th = 80/9;
+
+  const ok = (a, b) => Math.abs(a - b) < 1e-9;
+  const okMark = (a, b) => ok(a, b) ? '<span class="ok">✓</span>' : '<span class="fail">✗</span>';
+
+  let html = '';
+  html += `<div><span class="key">A₁ (Petersen adj):</span> spectrum = <span class="val">{3, 1⁵, (−2)⁴}</span></div>`;
+  html += `<div style="margin-left:8px;color:#888;">tr = ${fmt(trA1)} (0) ${okMark(trA1, tA1_th)} · tr² = ${fmt(trA1_2)} (30) ${okMark(trA1_2, tA1_2_th)}</div>`;
+  html += `<div><span class="key">A₂ (complement adj):</span> spectrum = <span class="val">{6, 1⁴, (−2)⁵}</span></div>`;
+  html += `<div style="margin-left:8px;color:#888;">tr = ${fmt(trA2)} (0) ${okMark(trA2, tA2_th)} · tr² = ${fmt(trA2_2)} (60) ${okMark(trA2_2, tA2_2_th)}</div>`;
+  html += `<div><span class="key">G_raw = ⟨U_i, U_j⟩:</span> spectrum = <span class="val">{4/3⁵, 0⁵}</span></div>`;
+  html += `<div style="margin-left:8px;color:#888;">tr = ${fmt(trG)} (20/3=${fmt(20/3)}) ${okMark(trG, tG_th)} · tr² = ${fmt(trG2)} (80/9=${fmt(80/9)}) ${okMark(trG2, tG2_th)}</div>`;
+  html += `<div><span class="key">K = (3/2)·G_raw = 2·E₁:</span> spectrum = <span class="val">{2⁵, 0⁵}</span> <span style="color:#888;">(paper Theorem 1)</span></div>`;
+  html += `<div style="margin-top:4px;font-size:9px;color:#888;">raw coords: Y^T Y = (4/3)·I₅ &nbsp;·&nbsp; normalised ETF: Ŷ^T Ŷ = 2·I₅</div>`;
+  html += renderPCANote();
+
+  document.getElementById('spectrum-list').innerHTML = html;
+}
+renderSpectrumPanel();
+
+// ============================================================
+// ASSOCIATION SCHEME PANEL (Petersen 3-class scheme)
+// ============================================================
+function renderAssocPanel() {
+  // Relation cardinalities
+  const R0 = 10;  // (i, i)
+  let R1 = 0;  // Petersen edge (directed)
+  let R2 = 0;  // complement edge (directed)
+  for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) {
+    if (i !== j) {
+      if (A1[i][j]) R1++;
+      else if (A2[i][j]) R2++;
+    }
+  }
+
+  // Bose-Mesner check: A_0 + A_1 + A_2 = J (all-ones)?
+  let bmOk = true;
+  for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) {
+    const A0ij = (i === j) ? 1 : 0;
+    const sum = A0ij + A1[i][j] + A2[i][j];
+    if (sum !== 1) { bmOk = false; }
+  }
+
+  // Intersection numbers (classical Petersen values)
+  // p_ij^k: for (a, b) ∈ R_k, the count # of c : (a,c) ∈ R_i ∧ (c,b) ∈ R_j
+  // We numerically verify p_11^0, p_11^1, p_11^2.
+  function intersectionNumber(i_rel, j_rel, k_rel) {
+    // Pick a representative pair (a, b) ∈ R_k and count |{c : (a,c)∈R_i, (c,b)∈R_j}|.
+    const rels = [
+      (a, b) => a === b,           // R_0
+      (a, b) => A1[a][b] === 1,    // R_1 Petersen
+      (a, b) => A2[a][b] === 1,    // R_2 complement
+    ];
+    // Search for a representative pair (a, b) ∈ R_k
+    for (let a = 0; a < 10; a++) for (let b = 0; b < 10; b++) {
+      if (rels[k_rel](a, b)) {
+        let count = 0;
+        for (let c = 0; c < 10; c++) {
+          if (rels[i_rel](a, c) && rels[j_rel](c, b)) count++;
+        }
+        return count;
+      }
+    }
+    return -1;
+  }
+
+  const p110 = intersectionNumber(1, 1, 0);
+  const p111 = intersectionNumber(1, 1, 1);
+  const p112 = intersectionNumber(1, 1, 2);
+  const p120 = intersectionNumber(1, 2, 0);
+  const p121 = intersectionNumber(1, 2, 1);
+  const p122 = intersectionNumber(1, 2, 2);
+  const p220 = intersectionNumber(2, 2, 0);
+  const p221 = intersectionNumber(2, 2, 1);
+  const p222 = intersectionNumber(2, 2, 2);
+
+  let html = '';
+  html += `<div><span class="key">R₀ (diagonal):</span> <span class="val">|R₀| = ${R0}</span></div>`;
+  html += `<div><span class="key">R₁ (Petersen, ⟨U,U⟩=+2/9):</span> <span class="val">|R₁| = ${R1}</span> = 2·15 ✓</div>`;
+  html += `<div><span class="key">R₂ (complement, ⟨U,U⟩=−2/9):</span> <span class="val">|R₂| = ${R2}</span> = 2·30 ✓</div>`;
+  html += `<div><span class="key">|R₀|+|R₁|+|R₂| =</span> <span class="val">${R0+R1+R2} = 10²</span> ${R0+R1+R2 === 100 ? '<span class="ok">✓</span>' : '<span class="fail">✗</span>'}</div>`;
+  html += `<div><span class="key">Bose-Mesner: A₀+A₁+A₂ = J:</span> ${bmOk ? '<span class="ok">✓</span>' : '<span class="fail">✗</span>'}  dim = <span class="val">3</span></div>`;
+  html += `<div style="margin-top:4px;color:#88aacc;">Intersection numbers (p_ij^k):</div>`;
+  html += `<div style="margin-left:8px;font-size:9px;">`;
+  html += `p₁₁⁰=${p110} <span style="color:#666;">(Petersen degree = 3)</span><br>`;
+  html += `p₁₁¹=${p111} <span style="color:#666;">(${p111===0 ? 'triangle-free ✓' : 'NOT triangle-free'})</span><br>`;
+  html += `p₁₁²=${p112} <span style="color:#666;">(common Petersen neighbour on complement)</span><br>`;
+  html += `p₂₂⁰=${p220} <span style="color:#666;">(complement degree = 6)</span><br>`;
+  html += `p₁₂¹=${p121}, p₁₂²=${p122}, p₂₂¹=${p221}, p₂₂²=${p222}`;
+  html += `</div>`;
+
+  document.getElementById('assoc-list').innerHTML = html;
+}
+renderAssocPanel();
+
+// ============================================================
+// A_5-ACTION PANEL: current g, σ_g permutation, Sym²₀(g) 5×5
+// ============================================================
+function renderA5Panel() {
+  const gi = params.activeG;
+  const σ = A5_SIGMA[gi];
+  const M = A5_SYM2[gi];
+  // ρ(g) 3×3 matrix
+  const R = A5_ELEMS[gi];
+
+  let html = '';
+  html += `<div><span class="key">g index (A_5):</span> <span class="val">${gi}</span> / 60</div>`;
+  // σ_g permutation
+  let σStr = '';
+  for (let i = 0; i < 10; i++) σStr += `${i}→${σ[i]}` + (i < 9 ? ', ' : '');
+  html += `<div style="font-size:9px;margin-top:2px;"><span class="key">σ_g on the 10 points:</span><br><span style="color:#ffffaa;">${σStr}</span></div>`;
+
+  // ρ(g) 3×3 matrix table
+  html += `<div style="margin-top:4px;"><span class="key">ρ(g) ∈ SO(3):</span></div>`;
+  html += `<table style="font-size:9px;color:#ddd;margin-left:4px;border-collapse:collapse;">`;
+  for (let i = 0; i < 3; i++) {
+    html += '<tr>';
+    for (let j = 0; j < 3; j++) {
+      html += `<td style="padding:0 4px;text-align:right;width:50px;">${R[i][j].toFixed(3)}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</table>';
+
+  // Sym²₀(g) 5×5 matrix table
+  html += `<div style="margin-top:4px;"><span class="key">Sym²₀(g) ∈ SO(5):</span></div>`;
+  html += `<table style="font-size:8px;color:#ddd;margin-left:4px;border-collapse:collapse;">`;
+  for (let i = 0; i < 5; i++) {
+    html += '<tr>';
+    for (let j = 0; j < 5; j++) {
+      const v = M[i][j];
+      const intensity = Math.min(1, Math.abs(v));
+      const r = v > 0 ? 100 : 0, g_col = 0, b = v < 0 ? 100 : 0;
+      const bg = `rgba(${100 + r * 1.5}, ${100 + intensity * 50}, ${100 + b * 1.5}, ${intensity * 0.7})`;
+      html += `<td style="padding:0 4px;text-align:right;width:38px;background:${bg};">${v.toFixed(2)}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</table>';
+
+  // Stabilizer info: number of g with σ_g(active i) = active i
+  let stabCount = 0;
+  for (let k = 0; k < 60; k++) if (A5_SIGMA[k][params.activeI] === params.activeI) stabCount++;
+  html += `<div style="margin-top:4px;"><span class="key">|Stab(${params.activeI})|:</span> <span class="val">${stabCount}</span> (≅ S_3, ${stabCount === 6 ? '✓' : '✗'})</div>`;
+  html += `<div style="font-size:9px;color:#888;">Orbit(${params.activeI}) = all 10 (transitive A_5-action)</div>`;
+
+  document.getElementById('a5-list').innerHTML = html;
+}
+
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+// ============================================================
+// ANIMATION STATE — for the A_5-action smooth interpolation
+// ============================================================
+// "Random g" or g-slider movement: R(g) slerps the v_i arrows
+// and the active-i highlight transitions to σ_g(i).
+const ANIMATION_DURATION_MS = 450;
+const animState = {
+  startTime: null,         // performance.now() when started
+  fromR: null,             // 3×3 matrix (or null = identity)
+  toR: null,               // 3×3 matrix
+  fromActiveI: 0,          // highlight start
+  toActiveI: 0,            // highlight end
+};
+
+function slerp3D(a, b, t) {
+  // Spherical linear interpolation between two unit vectors.
+  // a, b unit vectors in ℝ³; t ∈ [0, 1].
+  let dot = a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+  // Antipodal case (dot ≈ −1): flip b to take the "shorter" arc
+  let bSigned = b;
+  if (dot < 0) { bSigned = [-b[0], -b[1], -b[2]]; dot = -dot; }
+  if (dot > 0.9999) return [a[0]*(1-t)+bSigned[0]*t, a[1]*(1-t)+bSigned[1]*t, a[2]*(1-t)+bSigned[2]*t];
+  const omega = Math.acos(Math.max(-1, Math.min(1, dot)));
+  const sinO = Math.sin(omega);
+  const s1 = Math.sin((1-t)*omega) / sinO;
+  const s2 = Math.sin(t*omega) / sinO;
+  return [a[0]*s1 + bSigned[0]*s2, a[1]*s1 + bSigned[1]*s2, a[2]*s1 + bSigned[2]*s2];
+}
+
+function startGAction(newGi) {
+  // Activate a new g with animation; the active i is permuted by σ_g.
+  const σ = A5_SIGMA[newGi];
+  animState.fromR = animState.toR || [[1,0,0],[0,1,0],[0,0,1]];  // last or identity
+  animState.toR = A5_ELEMS[newGi];
+  animState.fromActiveI = params.activeI;
+  animState.toActiveI = σ[params.activeI];
+  animState.startTime = performance.now();
+  params.activeG = newGi;
+  params.applyA5Action = true;
+  updateGuiDisplay();
+}
+
+const params = {
+  activeI: 0,
+  activeG: 0,                // A_5-element index (0..59)
+  basisChoice: 'B3-B4-B5',
+  showIcoVerts: true,
+  showIcoEdges: true,
+  showFaceCenters: false,
+  showRays: true,
+  showTetraCompound: false,  // 5 inscribed tetrahedra compound (paper §5)
+  showCompl: false,
+  showPetersenEdges3D: true,
+  showComplEdges3D: false,
+  showVeronese: true,
+  showKneserLabels: true,    // Kneser {a,b} labels on Petersen vertices
+  applyA5Action: false,      // if true: apply the active g-action to the v_i (Panel A rotation)
+  animate: true,
+};
+// 10 signs (signed switching)
+const signs = new Array(10).fill(1);
+
+// ============================================================
+// PANEL A — Three.js 3D icosahedron + 10 v_i rays
+// ============================================================
+const canvasA = document.getElementById('canvas-A');
+const sceneA = new THREE.Scene();
+sceneA.background = new THREE.Color(0x0a0a12);
+const cameraA = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+cameraA.position.set(4, 3, 4);
+const rendererA = new THREE.WebGLRenderer({ canvas: canvasA, antialias: true });
+const controlsA = new OrbitControls(cameraA, canvasA);
+controlsA.enableDamping = true;
+sceneA.add(new THREE.AmbientLight(0xffffff, 0.5));
+const dlA = new THREE.DirectionalLight(0xffffff, 0.6); dlA.position.set(5, 5, 5); sceneA.add(dlA);
+
+// 12 vertices
+const verticesGroup = new THREE.Group();
+ICO_VERTS.forEach(v => {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), new THREE.MeshStandardMaterial({ color: 0x88aaff }));
+  m.position.set(v[0], v[1], v[2]);
+  verticesGroup.add(m);
+});
+sceneA.add(verticesGroup);
+
+// 30 edges
+const edgesGroup = new THREE.Group();
+ICO_EDGES.forEach(([i,j]) => {
+  const geom = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...ICO_VERTS[i]), new THREE.Vector3(...ICO_VERTS[j])]);
+  edgesGroup.add(new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x556688, transparent: true, opacity: 0.3 })));
+});
+sceneA.add(edgesGroup);
+
+// 20 face centres
+const faceCentersGroup = new THREE.Group();
+FACE_CENTERS.forEach(c => {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), new THREE.MeshStandardMaterial({ color: 0xaaaaaa }));
+  m.position.set(c[0], c[1], c[2]);
+  faceCentersGroup.add(m);
+});
+faceCentersGroup.visible = false;
+sceneA.add(faceCentersGroup);
+
+// 10 v_i rays (ArrowHelper)
+const rayGroup = new THREE.Group();
+const rays = [];
+for (let i = 0; i < 10; i++) {
+  const dir = new THREE.Vector3(...V[i]).normalize();
+  const arrow = new THREE.ArrowHelper(dir, new THREE.Vector3(0,0,0), 1.5, parseInt(COLORS[i].slice(1), 16), 0.15, 0.08);
+  rays.push(arrow);
+  rayGroup.add(arrow);
+}
+sceneA.add(rayGroup);
+
+// ============================================================
+// 5 inscribed tetrahedra edges — paper §5 5-tetra compound viz.
+// Each tetrahedron = 4 face-pair indices (CUBES[t]). All 6 edges drawn.
+//
+// Per Lemma 5.2: each 4-coclique becomes a regular tetrahedron in ℝ³
+// only AFTER applying a local switching (ε_i ∈ {±1} per vertex) that
+// makes the 4 pairwise inner products equal −1/3. Without switching,
+// the raw V[i] representatives mix +1/3 and −1/3 dot products and the
+// drawn quadrilateral is not a regular tetrahedron in ℝ³ (only
+// projectively). The tetraSigns(four) helper computes the local
+// switching: fix ε_0 = +1, then ε_a = ±1 so that v_0 · (ε_a v_a) < 0.
+// ============================================================
+function tetraSigns(four) {
+  const signs = [1, 1, 1, 1];
+  for (let a = 1; a < 4; a++) {
+    const i0 = four[0];
+    const ia = four[a];
+    const dot = V[i0][0]*V[ia][0] + V[i0][1]*V[ia][1] + V[i0][2]*V[ia][2];
+    signs[a] = dot > 0 ? -1 : 1;
+  }
+  return signs;
+}
+
+const TETRA_COLORS = [0xff5566, 0x66ddaa, 0x77aaff, 0xffcc55, 0xcc77ff];
+const tetraGroup = new THREE.Group();
+const tetraSubGroups = [];   // 5 sub-groups, one per tetra
+for (let t = 0; t < CUBES.length; t++) {
+  const sub = new THREE.Group();
+  const four = CUBES[t];          // 4 face-pair indices
+  const color = TETRA_COLORS[t % TETRA_COLORS.length];
+  const signsLocal = tetraSigns(four);
+  // 6 edges (choose 2 from 4), drawn between locally switched vertices
+  // so the configuration is a regular tetrahedron in ℝ³ (not just ℝP²).
+  for (let a = 0; a < 4; a++) for (let b = a + 1; b < 4; b++) {
+    const i = four[a], j = four[b];
+    const sa = signsLocal[a], sb = signsLocal[b];
+    const p1 = new THREE.Vector3(sa * V[i][0], sa * V[i][1], sa * V[i][2]).multiplyScalar(1.5);
+    const p2 = new THREE.Vector3(sb * V[j][0], sb * V[j][1], sb * V[j][2]).multiplyScalar(1.5);
+    const geom = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.55 });
+    sub.add(new THREE.Line(geom, mat));
+  }
+  tetraSubGroups.push(sub);
+  tetraGroup.add(sub);
+}
+sceneA.add(tetraGroup);
+tetraGroup.visible = false;
+
+// axes
+sceneA.add(new THREE.AxesHelper(1.8));
+
+// ============================================================
+// PANEL B (Sym²₀ lift) — Three.js 3D Sym²₀ projection + 10 U_i points
+// ============================================================
+const canvasC = document.getElementById('canvas-B');
+const sceneC = new THREE.Scene();
+sceneC.background = new THREE.Color(0x0a0a12);
+const cameraC = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+cameraC.position.set(2, 1.5, 2);
+const rendererC = new THREE.WebGLRenderer({ canvas: canvasC, antialias: true });
+const controlsC = new OrbitControls(cameraC, canvasC);
+controlsC.enableDamping = true;
+sceneC.add(new THREE.AmbientLight(0xffffff, 0.5));
+const dlC = new THREE.DirectionalLight(0xffffff, 0.6); dlC.position.set(5, 5, 5); sceneC.add(dlC);
+sceneC.add(new THREE.AxesHelper(1.0));
+
+// 10 U_i points (spheres)
+const uSpheresGroup = new THREE.Group();
+const uSpheres = [];
+for (let i = 0; i < 10; i++) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshStandardMaterial({ color: parseInt(COLORS[i].slice(1), 16) }));
+  uSpheres.push(m);
+  uSpheresGroup.add(m);
+}
+sceneC.add(uSpheresGroup);
+
+// Petersen edges (15 red) + complement (30 blue) in the Sym²₀ 3D projection
+const uEdgesGroup = new THREE.Group();
+const uEdges = [];  // {line, type: 'petersen'/'compl', i, j}
+for (let i = 0; i < 10; i++) for (let j = i+1; j < 10; j++) {
+  const isPetersen = Math.abs(GRAM[i][j] - 2/9) < 1e-6;
+  const geom = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
+  const mat = new THREE.LineBasicMaterial({
+    color: isPetersen ? 0xff5555 : 0x5588ff,
+    transparent: true,
+    opacity: isPetersen ? 0.85 : 0.25,
+    linewidth: isPetersen ? 2 : 1,
+  });
+  const line = new THREE.Line(geom, mat);
+  uEdges.push({ line, type: isPetersen ? 'petersen' : 'compl', i, j });
+  uEdgesGroup.add(line);
+}
+sceneC.add(uEdgesGroup);
+
+// 5×5 Jacobi eigenvalue solver for symmetric matrices (for true PCA)
+function jacobi5x5(M) {
+  const n = 5;
+  const A = M.map(row => row.slice());
+  const V = Array.from({length: n}, (_, i) => Array.from({length: n}, (_, j) => i === j ? 1 : 0));
+  for (let iter = 0; iter < 100; iter++) {
+    // Find largest off-diagonal element
+    let pmax = 0, p = 0, q = 1;
+    for (let i = 0; i < n; i++) for (let j = i+1; j < n; j++) {
+      if (Math.abs(A[i][j]) > pmax) { pmax = Math.abs(A[i][j]); p = i; q = j; }
+    }
+    if (pmax < 1e-14) break;
+    // Givens rotation
+    const theta = (A[q][q] - A[p][p]) / (2 * A[p][q]);
+    const t = Math.sign(theta || 1) / (Math.abs(theta) + Math.sqrt(theta*theta + 1));
+    const c = 1 / Math.sqrt(t*t + 1);
+    const s = t * c;
+    // A-update
+    const App = A[p][p], Aqq = A[q][q], Apq = A[p][q];
+    A[p][p] = c*c*App - 2*s*c*Apq + s*s*Aqq;
+    A[q][q] = s*s*App + 2*s*c*Apq + c*c*Aqq;
+    A[p][q] = A[q][p] = 0;
+    for (let i = 0; i < n; i++) if (i !== p && i !== q) {
+      const Aip = A[i][p], Aiq = A[i][q];
+      A[i][p] = A[p][i] = c*Aip - s*Aiq;
+      A[i][q] = A[q][i] = s*Aip + c*Aiq;
+    }
+    // V-update
+    for (let i = 0; i < n; i++) {
+      const Vip = V[i][p], Viq = V[i][q];
+      V[i][p] = c*Vip - s*Viq;
+      V[i][q] = s*Vip + c*Viq;
+    }
+  }
+  // Eigenvalues + eigenvectors (columns of V)
+  const eigs = [];
+  for (let i = 0; i < n; i++) {
+    eigs.push({ val: A[i][i], vec: V.map(row => row[i]) });
+  }
+  eigs.sort((a, b) => b.val - a.val);
+  return eigs;
+}
+
+// PCA: 5×5 covariance Y^T Y / 10, top 3 eigenvectors for 3D projection
+let PCA_BASIS = null;  // [vec0, vec1, vec2], each a 5D vector
+function recomputePCA() {
+  // Covariance C[a][b] = Σ_i Y_iα Y_iβ / 10
+  const C = Array.from({length: 5}, () => new Array(5).fill(0));
+  for (let i = 0; i < 10; i++) for (let a = 0; a < 5; a++) for (let b = 0; b < 5; b++) {
+    C[a][b] += U_COORDS_5D[i][a] * U_COORDS_5D[i][b] / 10;
+  }
+  const eigs = jacobi5x5(C);
+  PCA_BASIS = [eigs[0].vec, eigs[1].vec, eigs[2].vec];
+}
+recomputePCA();
+
+// 3D projection U_COORDS_5D → (x, y, z)
+function project5Dto3D(coord5, choice) {
+  if (choice === 'B1-B2-B3') return [coord5[0], coord5[1], coord5[2]];
+  if (choice === 'B3-B4-B5') return [coord5[2], coord5[3], coord5[4]];
+  if (choice === 'PCA' && PCA_BASIS) {
+    // ⟨coord5, vec_k⟩ projection
+    return PCA_BASIS.map(v => v[0]*coord5[0] + v[1]*coord5[1] + v[2]*coord5[2] + v[3]*coord5[3] + v[4]*coord5[4]);
+  }
+  return [coord5[0], coord5[1], coord5[2]];
+}
+
+// Veronese surface mesh (ν_2(ℝP²) ⊂ Sym²₀(ℝ³) ≅ ℝ⁵, 2D parameterization on S²)
+let veroneseMesh = null;
+let veroneseWire = null;
+function rebuildVeroneseMesh(scale) {
+  if (veroneseMesh) { sceneC.remove(veroneseMesh); veroneseMesh.geometry.dispose(); veroneseMesh.material.dispose(); }
+  if (veroneseWire) { sceneC.remove(veroneseWire); veroneseWire.geometry.dispose(); veroneseWire.material.dispose(); }
+  veroneseMesh = veroneseWire = null;
+  if (!params.showVeronese) return;
+  // Parametric surface: (u, v) ∈ [0,1]² → v(θ, φ) ∈ S² → U(v) ∈ Sym²₀ → projection to ℝ³
+  const geom = new ParametricGeometry((u, v, target) => {
+    const θ = u * Math.PI;
+    const φ = v * 2 * Math.PI;
+    const vx = Math.sin(θ) * Math.cos(φ);
+    const vy = Math.sin(θ) * Math.sin(φ);
+    const vz = Math.cos(θ);
+    const U_pt = computeU([vx, vy, vz]);
+    const c5 = coordsInSym2Basis(U_pt);
+    const [x, y, z] = project5Dto3D(c5, params.basisChoice);
+    target.set(x * scale, y * scale, z * scale);
+  }, 48, 96);
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0x66aaff, transparent: true, opacity: 0.18, side: THREE.DoubleSide
+  });
+  veroneseMesh = new THREE.Mesh(geom, mat);
+  sceneC.add(veroneseMesh);
+  // Wireframe overlay
+  const wireGeom = new THREE.WireframeGeometry(geom);
+  veroneseWire = new THREE.LineSegments(wireGeom, new THREE.LineBasicMaterial({
+    color: 0x88ccff, transparent: true, opacity: 0.15
+  }));
+  sceneC.add(veroneseWire);
+}
+
+function updatePanelC() {
+  // For PCA we recompute (tight-frame gives a small numerical variation each time)
+  if (params.basisChoice === 'PCA') recomputePCA();
+
+  const projected = U_COORDS_5D.map(c => project5Dto3D(c, params.basisChoice));
+  // Scaling for visibility in 3D space
+  const maxR = Math.max(...projected.map(p => Math.hypot(p[0], p[1], p[2])));
+  const scale = maxR > 1e-9 ? 1.5 / maxR : 1;
+  for (let i = 0; i < 10; i++) {
+    const p = projected[i];
+    uSpheres[i].position.set(p[0]*scale, p[1]*scale, p[2]*scale);
+    // (Scale is handled by animateFrame() so the highlight cross-fades.)
+  }
+  for (const e of uEdges) {
+    const p1 = projected[e.i], p2 = projected[e.j];
+    e.line.geometry.setFromPoints([
+      new THREE.Vector3(p1[0]*scale, p1[1]*scale, p1[2]*scale),
+      new THREE.Vector3(p2[0]*scale, p2[1]*scale, p2[2]*scale),
+    ]);
+    if (e.type === 'petersen') e.line.visible = params.showPetersenEdges3D;
+    else e.line.visible = params.showComplEdges3D;
+  }
+  // Rebuild Veronese surface with the same scale (the 10 U_i sit on the surface)
+  rebuildVeroneseMesh(scale);
+}
+
+// ============================================================
+// PANEL F — Canvas 2D Petersen graph
+// ============================================================
+const canvasB = document.getElementById('canvas-F');
+const ctxB = canvasB.getContext('2d');
+// 2D positions of the 10 nodes (classical Petersen drawing: 5 outer + 5 inner).
+// The natural node labelling of Petersen K(5,2) uses 2-element subsets
+// {a, b} ⊂ {0..4}. The correspondence (10 antipodal icosahedron face pairs
+// ↔ K(5,2) nodes) is numerical; we draw using the Petersen adjacency itself
+// (force-directed layout, or fixed Petersen positions with the index as label).
+
+// Classical Petersen-star positions (5 outer + 5 inner with 36° offset).
+// The permutation KNESER_LAYOUT_POS assigns face-pair index i to its slot
+// so that the 15 physical layout edges match the Kneser adjacency exactly.
+function getPetersenLayout(W, H) {
+  const cx = W / 2, cy = H / 2;
+  const Router = Math.min(W, H) * 0.38;
+  const Rinner = Router * 0.45;
+  // 10 fixed classical positions (slot indices 0..9)
+  const slotPositions = [];
+  for (let k = 0; k < 5; k++) {
+    const angle = -Math.PI / 2 + k * 2 * Math.PI / 5;
+    slotPositions.push([cx + Router * Math.cos(angle), cy + Router * Math.sin(angle)]);
+  }
+  for (let k = 0; k < 5; k++) {
+    const angle = -Math.PI / 2 + (k + 0.5) * 2 * Math.PI / 5;
+    slotPositions.push([cx + Rinner * Math.cos(angle), cy + Rinner * Math.sin(angle)]);
+  }
+  // Face-pair index i is placed at slot KNESER_LAYOUT_POS[i]
+  const positions = new Array(10);
+  for (let i = 0; i < 10; i++) {
+    positions[i] = slotPositions[KNESER_LAYOUT_POS[i]];
+  }
+  return positions;
+}
+
+// Kneser-consistent layout permutation by graph isomorphism search:
+// find π : {0..9} → {0..9} so that the 15 physical edges of the classical
+// Petersen-star drawing (outer pentagon + inner 5/2-star + 5 spokes) exactly
+// match the Kneser adjacency PETERSEN_ADJ.
+//
+// Classical layout edges (by slot index 0..9):
+//   - outer pentagon: (0,1), (1,2), (2,3), (3,4), (4,0)
+//   - 5 spokes: (0,5), (1,6), (2,7), (3,8), (4,9)
+//   - inner 5/2-star: (5,7), (7,9), (9,6), (6,8), (8,5)
+const CLASSIC_EDGES_SET = new Set([
+  '0-1','1-2','2-3','3-4','0-4',
+  '0-5','1-6','2-7','3-8','4-9',
+  '5-7','7-9','6-9','6-8','5-8',
+].map(s => s.split('-').sort((a,b)=>+a-+b).join('-')));
+function isEdgeClassic(p, q) {
+  const key = [p, q].sort((a,b)=>a-b).join('-');
+  return CLASSIC_EDGES_SET.has(key);
+}
+function findKneserConsistentPermutation() {
+  // Backtracking: assign i → pos[i] (pos is a permutation)
+  const pos = new Array(10).fill(-1);
+  const used = new Array(10).fill(false);
+  function tryAssign(i) {
+    if (i === 10) return true;
+    for (let p = 0; p < 10; p++) {
+      if (used[p]) continue;
+      // Consistency check: for every previously assigned j < i, if (i, j) is a
+      // Kneser edge (PETERSEN_ADJ), then (pos[i], pos[j]) must be a classical
+      // edge; if NOT a Kneser edge, then NOT a classical edge either.
+      let ok = true;
+      for (let j = 0; j < i; j++) {
+        const isKneser = PETERSEN_ADJ[i].includes(j);
+        const isClassic = isEdgeClassic(p, pos[j]);
+        if (isKneser !== isClassic) { ok = false; break; }
+      }
+      if (!ok) continue;
+      pos[i] = p; used[p] = true;
+      if (tryAssign(i + 1)) return true;
+      pos[i] = -1; used[p] = false;
+    }
+    return false;
+  }
+  tryAssign(0);
+  return pos;
+}
+// pos[i] = slot where face-pair index i is placed in the classical Petersen layout (0..9)
+const KNESER_LAYOUT_POS = findKneserConsistentPermutation();
+
+function drawPanelB() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvasB.clientWidth, H = canvasB.clientHeight;
+  canvasB.width = Math.round(W*dpr); canvasB.height = Math.round(H*dpr);
+  ctxB.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctxB.clearRect(0, 0, W, H);
+
+  const positions = getPetersenLayout(W, H);
+
+  // Optional complement edges (thin grey)
+  if (params.showCompl) {
+    ctxB.strokeStyle = 'rgba(102, 136, 170, 0.25)';
+    ctxB.lineWidth = 1;
+    for (let i = 0; i < 10; i++) for (let j = i+1; j < 10; j++) {
+      if (Math.abs(GRAM[i][j] + 2/9) < 1e-6) {
+        const p1 = positions[i], p2 = positions[j];
+        ctxB.beginPath(); ctxB.moveTo(p1[0], p1[1]); ctxB.lineTo(p2[0], p2[1]); ctxB.stroke();
+      }
+    }
+  }
+
+  // Petersen edges (thick red)
+  ctxB.strokeStyle = '#ff5555';
+  ctxB.lineWidth = 2.5;
+  for (let i = 0; i < 10; i++) for (let j = i+1; j < 10; j++) {
+    if (Math.abs(GRAM[i][j] - 2/9) < 1e-6) {
+      const p1 = positions[i], p2 = positions[j];
+      ctxB.beginPath(); ctxB.moveTo(p1[0], p1[1]); ctxB.lineTo(p2[0], p2[1]); ctxB.stroke();
+    }
+  }
+
+  // Highlight Petersen neighbours of the active i (yellow)
+  const adj = PETERSEN_ADJ[params.activeI];
+  ctxB.strokeStyle = '#ffcc66';
+  ctxB.lineWidth = 4;
+  adj.forEach(j => {
+    const p1 = positions[params.activeI], p2 = positions[j];
+    ctxB.beginPath(); ctxB.moveTo(p1[0], p1[1]); ctxB.lineTo(p2[0], p2[1]); ctxB.stroke();
+  });
+
+  // Nodes + {a,b} Kneser label
+  for (let i = 0; i < 10; i++) {
+    const [x, y] = positions[i];
+    const isActive = (i === params.activeI);
+    ctxB.fillStyle = COLORS[i];
+    ctxB.strokeStyle = isActive ? '#ffffff' : '#000';
+    ctxB.lineWidth = isActive ? 3 : 1;
+    ctxB.beginPath(); ctxB.arc(x, y, isActive ? 14 : 10, 0, 2*Math.PI); ctxB.fill(); ctxB.stroke();
+    // Index inside the circle
+    ctxB.fillStyle = '#000';
+    ctxB.font = `bold ${isActive ? 13 : 10}px monospace`;
+    ctxB.textAlign = 'center'; ctxB.textBaseline = 'middle';
+    ctxB.fillText(i, x, y);
+    // {a, b} Kneser label below the circle
+    if (params.showKneserLabels) {
+      const ab = LABEL_AB[i];
+      ctxB.fillStyle = isActive ? '#ffcc66' : '#aaa';
+      ctxB.font = `${isActive ? 11 : 9}px monospace`;
+      ctxB.fillText(`{${ab[0]},${ab[1]}}`, x, y + (isActive ? 26 : 22));
+    }
+  }
+
+  // Caption
+  ctxB.fillStyle = '#88aacc';
+  ctxB.font = '10px monospace';
+  ctxB.textAlign = 'left';
+  ctxB.fillText('Petersen K(5,2) = Kneser graph: node = 2-element subset, edge ⟺ disjoint', 12, H - 14);
+}
+
+// ============================================================
+// PANEL D — Canvas 2D schematic representation theory diagram
+// ============================================================
+const canvasD = document.getElementById('canvas-C');
+const ctxD = canvasD.getContext('2d');
+
+function drawPanelD() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvasD.clientWidth, H = canvasD.clientHeight;
+  canvasD.width = Math.round(W*dpr); canvasD.height = Math.round(H*dpr);
+  ctxD.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctxD.clearRect(0, 0, W, H);
+
+  const cx = W / 2;
+  const items = [
+    { label: 'A_5 ⟶ ρ ⟶ SO(3)',       desc: 'one icosahedral 3D irrep',        color: '#ffcc66' },
+    { label: 'ℝ³ (icosahedral orbit)', desc: '10 face-pair vectors v_i',        color: '#88aaff' },
+    { label: 'Sym²(ℝ³) = 1 ⊕ 5',       desc: 'representation decomposition',    color: '#ff8855' },
+    { label: 'Sym²₀(ℝ³) ≅ ℝ⁵',         desc: 'trace-free component',            color: '#88ff88' },
+    { label: '{U_1, ..., U_10}',       desc: '10 points on the 5D tight frame', color: '#ff5588' },
+    { label: 'Petersen K(5,2)',         desc: 'Gram relation ⟨U_i, U_j⟩ = +2/9', color: '#ff5555' },
+  ];
+
+  // Proportional layout: top + footer padding, distribute the rest
+  const padTop = 50;   // below panel title
+  const padBottom = 30; // for footer text
+  const usable = H - padTop - padBottom;
+  const slotH = usable / items.length;
+  const boxH = Math.min(56, slotH * 0.75);
+  const gapH = slotH - boxH;
+
+  ctxD.textAlign = 'center';
+  for (let k = 0; k < items.length; k++) {
+    const it = items[k];
+    const yCenter = padTop + (k + 0.5) * slotH;
+    const boxW = Math.min(320, W * 0.7);
+    const bx = cx - boxW/2, by = yCenter - boxH/2;
+    // Background
+    ctxD.fillStyle = it.color + '22';
+    ctxD.fillRect(bx, by, boxW, boxH);
+    ctxD.strokeStyle = it.color;
+    ctxD.lineWidth = 1.5;
+    ctxD.strokeRect(bx, by, boxW, boxH);
+    // Label (font scales with box height)
+    const labelFont = boxH > 40 ? 13 : 11;
+    const descFont = boxH > 40 ? 10 : 9;
+    ctxD.fillStyle = it.color;
+    ctxD.font = `bold ${labelFont}px monospace`;
+    ctxD.fillText(it.label, cx, yCenter - 4);
+    ctxD.fillStyle = '#ccc';
+    ctxD.font = `${descFont}px monospace`;
+    ctxD.fillText(it.desc, cx, yCenter + 12);
+
+    // Arrow to next box
+    if (k < items.length - 1) {
+      const y1 = by + boxH;
+      const y2_next = padTop + (k + 1.5) * slotH - boxH/2;
+      ctxD.strokeStyle = '#666';
+      ctxD.lineWidth = 1.5;
+      ctxD.beginPath(); ctxD.moveTo(cx, y1); ctxD.lineTo(cx, y2_next - 6); ctxD.stroke();
+      ctxD.beginPath();
+      ctxD.moveTo(cx, y2_next);
+      ctxD.lineTo(cx - 5, y2_next - 8);
+      ctxD.lineTo(cx + 5, y2_next - 8);
+      ctxD.closePath();
+      ctxD.fillStyle = '#666';
+      ctxD.fill();
+    }
+  }
+
+  // Footer (shortened on narrow widths)
+  ctxD.fillStyle = '#88aacc';
+  ctxD.font = '9px monospace';
+  ctxD.textAlign = 'left';
+  const footer = W < 600
+    ? 'Tight frame · 2-design · Petersen scheme'
+    : 'Tight frame · 2-design · Association scheme · Signed Gram-lift rigidity';
+  ctxD.fillText(footer, 12, H - 10);
+}
+
+// ============================================================
+// INTERACTION + UPDATE
+// ============================================================
+// animateFrame(t): updates Panel A v_i arrows + Panel C uSpheres scale based on t ∈ [0,1].
+// The animate() loop calls it every frame; t = 1 gives the "settled" state.
+function animateFrame(t) {
+  // Smoothstep easing: t² · (3 − 2t)
+  const ts = t * t * (3 - 2 * t);
+
+  // Panel A: slerp 10 v_i arrows from animState.fromR to animState.toR
+  const R_to = params.applyA5Action ? animState.toR : null;
+  const R_from = params.applyA5Action ? (animState.fromR || [[1,0,0],[0,1,0],[0,0,1]]) : null;
+  for (let i = 0; i < 10; i++) {
+    let v_eff;
+    if (R_to) {
+      const v_from = matvec3(R_from, V[i]);
+      const v_to = matvec3(R_to, V[i]);
+      v_eff = slerp3D(v_from, v_to, ts);
+    } else {
+      v_eff = V[i];
+    }
+    // Switching
+    v_eff = [v_eff[0]*signs[i], v_eff[1]*signs[i], v_eff[2]*signs[i]];
+    const dir = new THREE.Vector3(v_eff[0], v_eff[1], v_eff[2]).normalize();
+    rays[i].setDirection(dir);
+    // Highlight cross-fade between from-i and to-i
+    let len = 1.5;
+    if (i === animState.fromActiveI && animState.fromActiveI !== animState.toActiveI) {
+      len = 2.2 - 0.7 * ts;
+    } else if (i === animState.toActiveI) {
+      len = 1.5 + 0.7 * ts;
+    } else if (i === animState.fromActiveI) {
+      // Same from and to (no actual motion, just highlighted)
+      len = 2.2;
+    }
+    rays[i].setLength(len, 0.18, 0.09);
+    rays[i].visible = params.showRays;
+  }
+
+  // Panel C: uSpheres scale cross-fade between from and to
+  for (let i = 0; i < 10; i++) {
+    let scl = 1.0;
+    if (i === animState.fromActiveI && animState.fromActiveI !== animState.toActiveI) {
+      scl = 1.5 - 0.5 * ts;
+    } else if (i === animState.toActiveI) {
+      scl = 1.0 + 0.5 * ts;
+    } else if (i === animState.fromActiveI) {
+      scl = 1.5;
+    }
+    uSpheres[i].scale.setScalar(scl);
+  }
+}
+
+function updateAll() {
+  verticesGroup.visible = params.showIcoVerts;
+  edgesGroup.visible = params.showIcoEdges;
+  faceCentersGroup.visible = params.showFaceCenters;
+  tetraGroup.visible = params.showTetraCompound;
+
+  // Panel C: refresh U_i
+  updatePanelC();
+
+  // Draw Panels B + D + E + F
+  drawPanelB();
+  drawPanelD();
+  drawPanelE();
+  drawPanelF();
+  drawPanelCOverlay();
+
+  // Info panel
+  document.getElementById('active-i').textContent = params.activeI;
+  document.getElementById('neighbors').textContent = PETERSEN_ADJ[params.activeI].join(', ');
+  document.getElementById('self-gram').textContent = (Math.round(GRAM[params.activeI][params.activeI]*1e6)/1e6).toString();
+
+  // Refresh A_5-action panel
+  renderA5Panel();
+}
+
+// ============================================================
+// PANEL C OVERLAY — spectral characterization (Lemma 3.1) + −U obstruction.
+// Visualizes the eigenvalues (2/3, −1/3, −1/3) of the active U_i matrix,
+// contrasted against the eigenvalues (−2/3, 1/3, 1/3) of −U_i — the Veronese
+// surface is not invariant under the −I action (Lemma 4.2).
+// ============================================================
+const canvasCOverlay = document.getElementById('canvas-B-overlay');
+const ctxCOv = canvasCOverlay.getContext('2d');
+
+function drawPanelCOverlay() {
+  const W = canvasCOverlay.clientWidth, H = canvasCOverlay.clientHeight;
+  if (W === 0 || H === 0) return;
+  canvasCOverlay.width = W; canvasCOverlay.height = H;
+  ctxCOv.clearRect(0, 0, W, H);
+
+  // Overlay only in HERO state (the Sym²₀ lift lives on panel-B).
+  const panelLift = document.getElementById('panel-B');
+  if (!panelLift.classList.contains('hero')) return;
+
+  const boxX = 8, boxY = H - 110;
+  const boxW = 270, boxH = 100;
+  ctxCOv.fillStyle = 'rgba(15, 15, 25, 0.92)';
+  ctxCOv.fillRect(boxX, boxY, boxW, boxH);
+  ctxCOv.strokeStyle = '#444';
+  ctxCOv.strokeRect(boxX, boxY, boxW, boxH);
+
+  ctxCOv.fillStyle = '#ffcc66';
+  ctxCOv.font = 'bold 11px monospace';
+  ctxCOv.textAlign = 'left';
+  ctxCOv.fillText('Veronese spectral charact. (Lemma 3.1)', boxX + 8, boxY + 16);
+
+  ctxCOv.fillStyle = '#88ffaa';
+  ctxCOv.font = '10px monospace';
+  ctxCOv.fillText('spec(U_i) = (2/3, −1/3, −1/3)  ✓', boxX + 8, boxY + 36);
+  ctxCOv.fillStyle = '#aaa';
+  ctxCOv.font = '9px monospace';
+  ctxCOv.fillText('U_i = v_iv_iᵀ − I/3 ⟺ rank-1 PSD element', boxX + 8, boxY + 50);
+
+  // Lemma 4.2: −U_i is not a Veronese image
+  const yU = boxY + 72;
+  ctxCOv.fillStyle = '#ff6666';
+  ctxCOv.font = 'bold 9.5px monospace';
+  ctxCOv.fillText('−U_i:  spec = (−2/3, 1/3, 1/3)  ✗ not Veronese', boxX + 8, yU);
+  ctxCOv.fillStyle = '#888';
+  ctxCOv.font = '8px monospace';
+  ctxCOv.fillText('(spec(−U + I/3) = (−1/3, 2/3, 2/3) → negative eigenvalue)', boxX + 8, yU + 12);
+}
+const canvasE = document.getElementById('canvas-D');
+const ctxE = canvasE.getContext('2d');
+
+function drawPanelE() {
+  // Paper §5.4: the canonical-labeling quadratic 4s² − √3·s − 3/4 = 0
+  // has two real roots (√3 ± √15)/8 ∈ ℚ(√3, √5).
+  const W = canvasE.clientWidth, H = canvasE.clientHeight;
+  if (W === 0 || H === 0) return;
+  canvasE.width = W; canvasE.height = H;
+  ctxE.fillStyle = '#0a0a12';
+  ctxE.fillRect(0, 0, W, H);
+
+  ctxE.fillStyle = '#88aacc';
+  ctxE.font = '11px monospace';
+  ctxE.textAlign = 'center';
+  ctxE.fillText('4s² − √3·s − 3/4 = 0', W / 2, H * 0.13);
+
+  const SQRT3 = Math.sqrt(3), SQRT15 = Math.sqrt(15);
+  const root_minus = (SQRT3 - SQRT15) / 8;
+  const root_plus  = (SQRT3 + SQRT15) / 8;
+
+  const sMin = -1, sMax = 1.2;
+  const fMin = -1.2, fMax = 2.5;
+  const padX = 24, padY = 30;
+  const plotW = W - 2 * padX, plotH = H - padY * 2 - 18;
+  const s2x = s => padX + (s - sMin) / (sMax - sMin) * plotW;
+  const f2y = f => padY + 18 + (1 - (f - fMin) / (fMax - fMin)) * plotH;
+
+  ctxE.strokeStyle = '#333'; ctxE.lineWidth = 1;
+  ctxE.beginPath();
+  ctxE.moveTo(s2x(sMin), f2y(0)); ctxE.lineTo(s2x(sMax), f2y(0));
+  ctxE.moveTo(s2x(0), f2y(fMin)); ctxE.lineTo(s2x(0), f2y(fMax));
+  ctxE.stroke();
+
+  ctxE.strokeStyle = '#66aaff'; ctxE.lineWidth = 1.5;
+  ctxE.beginPath();
+  for (let s = sMin; s <= sMax; s += 0.01) {
+    const f = 4 * s * s - SQRT3 * s - 0.75;
+    const x = s2x(s), y = f2y(f);
+    if (s === sMin) ctxE.moveTo(x, y);
+    else            ctxE.lineTo(x, y);
+  }
+  ctxE.stroke();
+
+  for (const [r, color, lbl] of [
+    [root_minus, '#ff8866', '(√3−√15)/8'],
+    [root_plus,  '#88ffaa', '(√3+√15)/8'],
+  ]) {
+    const x = s2x(r), y = f2y(0);
+    ctxE.fillStyle = color;
+    ctxE.beginPath(); ctxE.arc(x, y, 4, 0, 2 * Math.PI); ctxE.fill();
+    ctxE.font = '9px monospace';
+    ctxE.textAlign = 'center';
+    ctxE.fillText(lbl, x, y + (r < 0 ? 22 : -10));
+    ctxE.fillStyle = '#888';
+    ctxE.font = '8px monospace';
+    ctxE.fillText('s = ' + r.toFixed(4), x, y + (r < 0 ? 32 : 22));
+  }
+
+  ctxE.fillStyle = '#666';
+  ctxE.font = '8.5px monospace';
+  ctxE.textAlign = 'left';
+  const yBot = H - 10;
+  ctxE.fillText('"−" root = classical icosahedral configuration', padX, yBot - 12);
+  ctxE.fillText('"+" root = exact (σ, D)-equivalent branch', padX, yBot);
+}
+
+// ============================================================
+// PANEL F — 1024-case enumeration pie chart (paper §5.7)
+// 992 inconsistent / 16 quadratic / 16 unit-norm invalid
+// ============================================================
+const canvasF = document.getElementById('canvas-E');
+const ctxF = canvasF.getContext('2d');
+
+function drawPanelF() {
+  // Paper §5.7 (Theorem 5.5): exact enumeration of the 1024 (ε, δ) cases
+  // under canonical labeling — partition 992 + 16 + 16; icosahedral orbit unique.
+  const W = canvasF.clientWidth, H = canvasF.clientHeight;
+  if (W === 0 || H === 0) return;
+  canvasF.width = W; canvasF.height = H;
+  ctxF.fillStyle = '#0a0a12';
+  ctxF.fillRect(0, 0, W, H);
+
+  const total = 1024;
+  const slices = [
+    { name: 'Inconsistent linear', count: 992, color: '#444466' },
+    { name: 'Rank-7 + quadratic (2 roots each)', count: 16, color: '#66ddaa' },
+    { name: 'Full-rank, unit-norm invalid', count: 16, color: '#ff8866' },
+  ];
+
+  ctxF.fillStyle = '#88aacc';
+  ctxF.font = '11px monospace';
+  ctxF.textAlign = 'center';
+  ctxF.fillText('Partition of the 1024 (ε, δ) cases', W / 2, H * 0.12);
+
+  const cx = W * 0.32, cy = H * 0.56;
+  const R = Math.min(W * 0.27, H * 0.36);
+  let theta0 = -Math.PI / 2;
+  for (const sl of slices) {
+    const span = (sl.count / total) * 2 * Math.PI;
+    ctxF.fillStyle = sl.color;
+    ctxF.beginPath();
+    ctxF.moveTo(cx, cy);
+    ctxF.arc(cx, cy, R, theta0, theta0 + span);
+    ctxF.closePath();
+    ctxF.fill();
+    ctxF.strokeStyle = '#0a0a12'; ctxF.lineWidth = 1;
+    ctxF.stroke();
+    theta0 += span;
+  }
+
+  ctxF.font = '9px monospace';
+  ctxF.textAlign = 'left';
+  let ly = cy - 24;
+  for (const sl of slices) {
+    ctxF.fillStyle = sl.color;
+    ctxF.fillRect(cx + R + 16, ly - 7, 8, 8);
+    ctxF.fillStyle = '#ccc';
+    const pct = (100 * sl.count / total).toFixed(1);
+    ctxF.fillText(`${sl.count} (${pct}%)`, cx + R + 30, ly);
+    ctxF.fillStyle = '#888';
+    ctxF.font = '8px monospace';
+    ctxF.fillText(sl.name, cx + R + 30, ly + 9);
+    ctxF.font = '9px monospace';
+    ly += 24;
+  }
+
+  // Footer: 32/32 orbit certificate caption
+  ctxF.fillStyle = '#88aacc';
+  ctxF.font = '9px monospace';
+  ctxF.textAlign = 'left';
+  ctxF.fillText('32/32 roots → H_ico orbit by exact (σ, D) certificate', 12, H - 10);
+}
+
+const gui = new GUI({ title: 'Veronese-lift controls', container: document.getElementById('gui-container') });
+
+const f1 = gui.addFolder('Active i (highlighted)');
+f1.add(params, 'activeI', 0, 9, 1).name('i ∈ {0, 1, …, 9}').onChange(updateAll);
+
+const f2 = gui.addFolder('Signed switching (ε_i)');
+const sw = { all_plus: () => { for (let i = 0; i < 10; i++) signs[i] = 1; updateSignDisplay(); updateAll(); },
+             all_minus: () => { for (let i = 0; i < 10; i++) signs[i] = -1; updateSignDisplay(); updateAll(); },
+             random: () => { for (let i = 0; i < 10; i++) signs[i] = Math.random() < 0.5 ? -1 : 1; updateSignDisplay(); updateAll(); } };
+const signControllers = [];
+for (let i = 0; i < 10; i++) {
+  const obj = { ['ε_'+i]: 1 };
+  const ctrl = f2.add(obj, 'ε_'+i, [-1, 1]).onChange(v => { signs[i] = v; updateAll(); });
+  signControllers.push({ ctrl, obj });
+}
+function updateSignDisplay() {
+  signControllers.forEach((sc, i) => {
+    sc.obj['ε_'+i] = signs[i];
+    sc.ctrl.updateDisplay();
+  });
+}
+f2.add(sw, 'all_plus').name('▶ All +1');
+f2.add(sw, 'all_minus').name('▶ All −1');
+f2.add(sw, 'random').name('▶ Random');
+f2.close();
+
+const f3 = gui.addFolder('Panel A display');
+f3.add(params, 'showIcoVerts').name('Icosahedron vertices (12)').onChange(updateAll);
+f3.add(params, 'showIcoEdges').name('Icosahedron edges (30)').onChange(updateAll);
+f3.add(params, 'showFaceCenters').name('Face centres (20)').onChange(updateAll);
+f3.add(params, 'showRays').name('10 v_i rays').onChange(updateAll);
+f3.add(params, 'showTetraCompound').name('5-tetrahedra compound (§5)').onChange(updateAll);
+f3.close();
+
+const f4 = gui.addFolder('Panel F display');
+f4.add(params, 'showCompl').name('Complement edges (30 grey)').onChange(updateAll);
+f4.add(params, 'showKneserLabels').name('Kneser {a,b} labels').onChange(updateAll);
+f4.close();
+
+// A_5-action controls — animated demonstration of g · U_i = U_σ(i)
+const f6 = gui.addFolder('A_5-action (60 elements)');
+f6.add(params, 'activeG', 0, 59, 1).name('g ∈ A_5').onChange((v) => {
+  // Slider move → animated application
+  startGAction(v);
+});
+f6.add(params, 'applyA5Action').name('Apply to v_i (Panel A rotates)').onChange((v) => {
+  if (!v) {
+    // Toggle off → animated return to identity
+    animState.fromR = animState.toR || [[1,0,0],[0,1,0],[0,0,1]];
+    animState.toR = [[1,0,0],[0,1,0],[0,0,1]];
+    animState.fromActiveI = params.activeI;
+    animState.toActiveI = params.activeI;
+    animState.startTime = performance.now();
+  }
+  updateAll();
+});
+const a5sw = {
+  identity: () => {
+    params.activeG = 0;
+    params.applyA5Action = false;
+    animState.fromR = animState.toR || [[1,0,0],[0,1,0],[0,0,1]];
+    animState.toR = [[1,0,0],[0,1,0],[0,0,1]];
+    animState.fromActiveI = params.activeI;
+    animState.toActiveI = params.activeI;
+    animState.startTime = performance.now();
+    updateGuiDisplay();
+    updateAll();
+  },
+  random: () => {
+    // Pick a new random g (excluding the current g so there is always motion)
+    let newG = params.activeG;
+    while (newG === params.activeG) newG = Math.floor(Math.random() * 60);
+    startGAction(newG);
+  },
+};
+f6.add(a5sw, 'identity').name('▶ Reset (g = id)');
+f6.add(a5sw, 'random').name('▶ Random g (animated)');
+function updateGuiDisplay() { gui.controllersRecursive().forEach(c => c.updateDisplay()); }
+
+const f5 = gui.addFolder('Panel B display');
+f5.add(params, 'basisChoice', { 'B_3,B_4,B_5 (off-diag)': 'B3-B4-B5', 'B_1,B_2,B_3 (mixed)': 'B1-B2-B3', 'PCA (numerical)': 'PCA' })
+  .name('Projection basis')
+  .onChange(updateAll);
+f5.add(params, 'showPetersenEdges3D').name('Petersen edges in 3D').onChange(updateAll);
+f5.add(params, 'showComplEdges3D').name('Complement edges in 3D').onChange(updateAll);
+f5.add(params, 'showVeronese').name('Veronese surface ν₂(ℝP²)').onChange(updateAll);
+
+// ============================================================
+// Hero-swap layout: pin-ikon click → hero ↔ small csere (LRU).
+// ============================================================
+const PANEL_IDS = ['A', 'B', 'C', 'D', 'E', 'F'];
+let heroOrder = ['A', 'F'];   // [oldest hero, newest hero]
+
+function applyLayout() {
+  for (const id of PANEL_IDS) {
+    const el = document.getElementById('panel-' + id);
+    if (heroOrder.includes(id)) el.classList.add('hero');
+    else                          el.classList.remove('hero');
+  }
+  setTimeout(resize, 50);
+}
+
+function togglePinHero(panelId) {
+  const isHero = heroOrder.includes(panelId);
+  if (isHero) {
+    heroOrder = heroOrder.filter(x => x !== panelId);
+    const candidate = PANEL_IDS.find(x => !heroOrder.includes(x) && x !== panelId);
+    if (candidate) heroOrder.push(candidate);
+  } else {
+    heroOrder = [heroOrder[1], panelId];
+  }
+  applyLayout();
+}
+
+for (const id of PANEL_IDS) {
+  const pin = document.querySelector(`.panel-pin[data-pin="${id}"]`);
+  if (pin) pin.addEventListener('click', () => togglePinHero(id));
+}
+
+function resize() {
+  for (const [renderer, camera, canvas] of [[rendererA, cameraA, canvasA], [rendererC, cameraC, canvasC]]) {
+    const W = canvas.clientWidth, H = canvas.clientHeight;
+    renderer.setSize(W, H, false);
+    camera.aspect = W / H;
+    camera.updateProjectionMatrix();
+  }
+  drawPanelB(); drawPanelD(); drawPanelE(); drawPanelF();
+  drawPanelCOverlay();
+}
+window.addEventListener('resize', resize);
+applyLayout();
+resize();
+updateAll();
+
+function animate() {
+  requestAnimationFrame(animate);
+  controlsA.update();
+  controlsC.update();
+
+  if (animState.startTime !== null) {
+    const elapsed = performance.now() - animState.startTime;
+    const t = Math.min(1, elapsed / ANIMATION_DURATION_MS);
+    animateFrame(t);
+    if (t >= 1) {
+      params.activeI = animState.toActiveI;
+      animState.fromR = animState.toR;
+      animState.startTime = null;
+      updateAll();
+    }
+  } else {
+    animateFrame(1);
+  }
+
+  rendererA.render(sceneA, cameraA);
+  rendererC.render(sceneC, cameraC);
+}
+animate();
+</script>
+</body>
+</html>

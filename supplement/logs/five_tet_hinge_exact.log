@@ -1,0 +1,77 @@
+PERP bases verified orthonormal.
+
+======================================================================
+Step 1: Verify the predicted icosahedral solution (exact)
+======================================================================
+
+Unit-norm check (c_k^2 + s_k^2 = 1):
+  k=1: c^2 + s^2 = 1
+  k=2: c^2 + s^2 = 1
+  k=3: c^2 + s^2 = 1
+  k=4: c^2 + s^2 = 1
+
+Hinge matching for the icosahedral solution:
+  pair (1, 2): T_1[1] = (-1) * T_2[1]
+  pair (1, 3): T_1[2] = (-1) * T_3[1]
+  pair (1, 4): T_1[3] = (-1) * T_4[2]
+  pair (2, 3): T_2[3] = (-1) * T_3[2]
+  pair (2, 4): T_2[2] = (-1) * T_4[1]
+  pair (3, 4): T_3[3] = (-1) * T_4[3]
+
+  ✓ All 6 hinge pairs match — icosahedral solution VERIFIED EXACTLY.
+
+======================================================================
+Step 2: Symbolic 18x8 linear system rank analysis
+======================================================================
+Total hinge equations: 18 (expected: 18)
+All equations linear in (c1, s1, ..., c4, s4): True
+L shape: (18, 8),  b shape: (18, 1)
+Computing exact ranks (this may take a moment)...
+rank(L) = 7  (expected 7: one-parameter affine family)
+Free variables: 1
+
+======================================================================
+Step 3: Solve and check unique solution = icosahedral
+======================================================================
+Number of solutions (linear system, no unit-norm): 1
+
+  Solution 0:
+    c1 = -1/4
+    c2 = -1/4
+    c3 = sqrt(3)*s4 - 1/2
+    c4 = sqrt(3)*s4 - 1/2
+    s1 = 2*s4 - sqrt(3)/4
+    s2 = 2*s4 - sqrt(3)/4
+    s3 = s4
+    s4 = s4
+
+Applying unit-norm constraints:
+  Free variables (after linear): [s4]
+  Unit-norm residuals (polynomial in free vars):
+    k=1: 4*s4**2 - sqrt(3)*s4 - 3/4
+    k=2: 4*s4**2 - sqrt(3)*s4 - 3/4
+    k=3: 4*s4**2 - sqrt(3)*s4 - 3/4
+    k=4: 4*s4**2 - sqrt(3)*s4 - 3/4
+  Solutions for free vars: 2
+    {s4: -sqrt(15)/8 + sqrt(3)/8}
+    {s4: sqrt(3)/8 + sqrt(15)/8}
+
+Substituting predicted icosahedral values into all 18 eqs:
+  ✓ All 18 equations vanish exactly at icosahedral solution.
+
+======================================================================
+Summary
+======================================================================
+  All-matched labeling: True
+  Linear system rank: 7 / 8 (expected 7, one-parameter family)
+  Linear system has solution family: True
+  All 4 unit-norm residuals = canonical quadratic 4 s_4^2 - sqrt(3) s_4 - 3/4: True
+  Canonical quadratic real roots: 2 (expected 2)
+  Icosahedral solution exact (0 residual on all 18 equations): True
+
+  ✓✓✓ EXACT ALGEBRAIC CERTIFICATE COMPLETE for this discrete case.
+  The 18-equation hinge system has a one-parameter solution family;
+  the unit-norm constraints reduce to the canonical quadratic
+  4 s_4^2 - sqrt(3) s_4 - 3/4 = 0 with two real roots in
+  Q(sqrt(3), sqrt(5)); the icosahedral configuration is one of
+  these two branches (the '-'-root).

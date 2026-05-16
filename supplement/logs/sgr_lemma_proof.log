@@ -1,0 +1,22 @@
+======================================================================
+Signed Gram Rigidity Lemma -- finite exhaustive verification
+======================================================================
+V_ico: 10 icosahedral face-pair unit vectors
+H_ico spectrum: [3.33333333 3.33333333 3.33333333 0.         0.         0.
+ 0.         0.         0.         0.        ]
+  -> rank = 3, nonzero eigenvalues all = 10/3 (tight frame)
+|Petersen edges|    = 15 (target mag sqrt(5)/3 = 0.745356)
+|Complement edges|  = 30 (target mag 1/3 = 0.333333)
+|Aut(Petersen)|     = 120   (= S_5)
+BFS tree edges fixed to +1 by switching: 9
+Non-tree Petersen edges (free signs):    6
+-> enumerating 2^6 = 64 Petersen-sign patterns
+
+
+======================================================================
+  TOTAL survivors:                    2
+  Distinct orbits (mod Aut(Petersen)): 1
+======================================================================
+  orbit signature: count=2  matches H_ico: True
+
+  *** RESULT: unique class, matches H_ico  -> SGR Lemma verified

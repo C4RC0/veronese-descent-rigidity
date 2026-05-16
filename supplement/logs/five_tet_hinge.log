@@ -1,0 +1,102 @@
+/home/Carco/work/2026/veronese-descent-rigidity/scripts/five_tet_hinge.py:101: SyntaxWarning: "\{" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\{"? A raw string is also an option.
+  (k in {1..4}, l in {1..4}\{k})
+======================================================================
+5-tetrahedron hinge rigidity: numerical exploration
+======================================================================
+
+Step 1: Build the icosahedral compound (5 tetrahedra in dodecahedron)
+----------------------------------------------------------------------
+  found 10 regular tetrahedra in dodecahedron
+  selected 5 tetrahedra forming the chiral compound
+  T_0: 4 vertices, pairwise inner products check:
+        [np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333)]
+  T_1: 4 vertices, pairwise inner products check:
+        [np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333)]
+  T_2: 4 vertices, pairwise inner products check:
+        [np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333)]
+  T_3: 4 vertices, pairwise inner products check:
+        [np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333)]
+  T_4: 4 vertices, pairwise inner products check:
+        [np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333), np.float64(-0.3333)]
+
+Step 2: Pairwise tetrahedra inner products (10x10 Gram structure)
+----------------------------------------------------------------------
+  Pair (T_k, T_l) vertex-axis inner products:
+    T_0, T_1: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_0, T_2: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_0, T_3: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_0, T_4: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_1, T_2: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_1, T_3: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_1, T_4: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_2, T_3: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_2, T_4: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+    T_3, T_4: distinct |v.w| values = [np.float64(0.3333), np.float64(0.7454), np.float64(1.0)]
+
+Step 3: Check the K_5 incidence (each pair shares 1 axis with |v.w|=1)
+----------------------------------------------------------------------
+    T_0 ~ T_1: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_0 ~ T_2: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_0 ~ T_3: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_0 ~ T_4: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_1 ~ T_2: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_1 ~ T_3: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_1 ~ T_4: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_2 ~ T_3: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_2 ~ T_4: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+    T_3 ~ T_4: 1 shared axes (expected: 1 in RP^2, 2 in R^3)
+
+======================================================================
+Phase 2: Newton-iteration search for hinge solutions
+======================================================================
+
+DEBUG: Verifying residual function on known icosahedral compound
+----------------------------------------------------------------------
+  found 10 regular tetrahedra in dodecahedron
+  Best Procrustes alignment: err = 0.00e+00
+  T_0 (aligned): [[ 0.57735027  0.57735027  0.57735027]
+ [-0.57735027 -0.57735027  0.57735027]
+ [-0.57735027  0.57735027 -0.57735027]
+ [ 0.57735027 -0.57735027 -0.57735027]]
+  A (target):    [[ 0.57735027  0.57735027  0.57735027]
+ [ 0.57735027 -0.57735027 -0.57735027]
+ [-0.57735027  0.57735027 -0.57735027]
+ [-0.57735027 -0.57735027  0.57735027]]
+  T_k assignments (compound index -> (axis k, vertex pos, sign)): {1: (1, 0, -1), 2: (2, 0, -1), 3: (3, 0, -1), 4: (0, 0, -1)}
+  Extracted eps: [-1. -1. -1. -1.]
+  Extracted phi (radians): [4.45970873 4.45970873 3.41251117 3.41251117]
+  Extracted phi (degrees): [255.52248781 255.52248781 195.52248781 195.52248781]
+
+  Scanning 64 delta-sign choices with these (eps, phi):
+  Best delta: [-1. -1.  1.  1.  1. -1.]
+  Best residual: 1.7821e+00
+
+  ⚠️  Even best delta gives residual 1.7821e+00
+      => labeling convention PI_MAP does NOT match geometry
+      Try scanning all 1296 labeling permutations as well.
+
+Scan parameters (labeling-free residual):
+  16 chirality choices  x  N random phi-inits each
+  100 random phi-initializations per chirality
+  Residual cutoff: cost < 1e-16  (essentially machine precision)
+
+Total Newton runs: 1600
+Solutions found (cost < 1e-16): 556
+
+Deduplication ((eps, phi mod 2pi), tol 1e-4):
+  Unique (eps, phi) configurations: 32
+
+Computing 10x10 signed Gram for each unique solution...
+  Successfully built 16 configurations
+
+Orbit classification (signed Gram canonical form)...
+  Distinct orbit classes: 1
+
+Orbit-class summary:
+  found 10 regular tetrahedra in dodecahedron
+  Class 0: 16 configurations, matches H_ico: True
+
+======================================================================
+RESULT: 1 orbit class — matches H_ico: True
+  ✓ Five-tetrahedron hinge rigidity numerically confirmed!
+  ✓ Layer B' bridge: candidate clean algebraic proof available

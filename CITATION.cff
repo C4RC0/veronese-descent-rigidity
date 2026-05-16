@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or refer to these executable certificates, please cite it as below."
+title: "Executable certificates for Veronese descent rigidity of the Petersen ETF"
+type: software
+authors:
+  - family-names: "TBD"
+    given-names: "TBD"
+repository-code: "https://github.com/C4RC0/veronese-descent-rigidity"
+license: MIT
+keywords:
+  - Petersen graph
+  - equiangular tight frame
+  - Veronese embedding
+  - association scheme
+  - icosahedral symmetry
+  - signed Gram rigidity
+  - computer-assisted proof
+preferred-citation:
+  type: article
+  title: "Veronese Descent Rigidity of the Petersen Equiangular Tight Frame"
+  authors:
+    - family-names: "TBD"
+      given-names: "TBD"
+  year: 2026

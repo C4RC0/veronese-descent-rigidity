@@ -1,0 +1,33 @@
+orbit size: 30  ->  antipodal pair reps: 15
+
+Distance classes (|H_ij| value -> count):
+  |H_ij| = 0.809017   count = 30
+  |H_ij| = 0.500000   count = 30
+  |H_ij| = 0.309017   count = 30
+  |H_ij| = 0.000000   count = 15
+
+Non-zero distance classes: 3
+  graph (|H_ij| = 0.809017):  n=15, edges=30, reg_deg=4, triangles=10
+    spectrum: [4.0, 2.0, 2.0, 2.0, 2.0, 2.0, -1.0, -1.0, -1.0, -1.0, -2.0, -2.0, -2.0, -2.0, -2.0]
+  graph (|H_ij| = 0.500000):  n=15, edges=30, reg_deg=4, triangles=10
+    spectrum: [4.0, 2.0, 2.0, 2.0, 2.0, 2.0, -1.0, -1.0, -1.0, -1.0, -2.0, -2.0, -2.0, -2.0, -2.0]
+  graph (|H_ij| = 0.309017):  n=15, edges=30, reg_deg=4, triangles=10
+    spectrum: [4.0, 2.0, 2.0, 2.0, 2.0, 2.0, -1.0, -1.0, -1.0, -1.0, -2.0, -2.0, -2.0, -2.0, -2.0]
+  graph (|H_ij| = 0, orthogonal):  n=15, edges=15, reg_deg=2, triangles=5
+    spectrum: [2.0, 2.0, 2.0, 2.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
+
+All 4 class-graphs + I partition K_15: OK
+
+Association-scheme check (intersection numbers):
+  forms a commutative association scheme: False
+
+Veronese lift Gram (in Sym^2_0):
+  spectrum: [2.0, 2.0, 2.0, 2.0, 2.0, -0.0, -0.0, -0.0, -0.0, -0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  rank: 5
+  Y^T Y = 
+[[ 2.  0. -0. -0. -0.]
+ [ 0.  2. -0. -0.  0.]
+ [-0. -0.  2. -0.  0.]
+ [-0. -0. -0.  2.  0.]
+ [-0.  0.  0.  0.  2.]]
+  5D tight frame (Y^T Y = lambda * I_5)?  True, lambda = 2.0000

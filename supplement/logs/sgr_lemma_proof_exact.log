@@ -1,0 +1,18 @@
+# Placeholder for sgr_lemma_proof_exact.py
+#
+# This script is a HEAVY OPTIONAL cross-check (exact sympy backtracking
+# over the 2^3 = 8 anchor sign choices with full polynomial squared-Gram
+# constraints). On a single modern CPU thread it can run for several
+# minutes.
+#
+# The certified proof of Theorem 3 does NOT depend on this script; it is
+# a second exact-symbolic witness, complementing the numerical POCS
+# verification in sgr_lemma_proof.py (which is captured in
+# sgr_lemma_proof.log).
+#
+# To capture the full log:
+#
+#     python3 -u scripts/sgr_lemma_proof_exact.py \
+#         > supplement/logs/sgr_lemma_proof_exact.log 2>&1
+#
+# Expected eventual outcome: exactly one equivalence class — H_ico.

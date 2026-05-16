@@ -1,0 +1,26 @@
+====================================================================================================
+ Platonic / finite-rotation-group census of two-distance Veronese lifts
+====================================================================================================
+group      orbit         orb  pair  #cls  distances                        5D tight  graph (large)
+----------------------------------------------------------------------------------------------------
+T (A_4)    vertex        4    4     1     0.3333(6)                        -         K_4 (one distance 0.3333)
+T (A_4)    face          4    4     1     0.3333(6)                        -         K_4 (one distance 0.3333)
+T (A_4)    edge          6    3     1     0.0000(3)                        -         no edges (orthogonal frame)
+O (S_4)    octa-vertex   6    3     1     0.0000(3)                        -         no edges (orthogonal frame)
+O (S_4)    cube-vertex   8    4     1     0.3333(6)                        -         K_4 (one distance 0.3333)
+O (S_4)    edge-midpoint 12   6     2     0.5000(12), 0.0000(3)            -         K_{2,2,2} (cocktail-party / octahedron-edge)
+I (A_5)    ico-vertex    12   6     1     0.4472(15)                       Y         K_6 (one distance 0.4472)
+I (A_5)    ico-face      20   10    2     0.7454(15), 0.3333(30)           Y         Petersen K(5,2)
+I (A_5)    ico-edge      30   15    4     0.8090(30), 0.5000(30), 0.3090(30), 0.0000(15) Y         -
+----------------------------------------------------------------------------------------------------
+
+Detailed dump for two-distance + 5D-tight-frame orbits:
+
+  I (A_5) / ico-face:
+     orbit_size = 20, pair_size = 10
+     distance classes: {np.float64(0.33333333): 30, np.float64(0.74535599): 15}
+     graph (large dist): Petersen K(5,2)
+     signed Gram spec: [3.3333, 3.3333, 3.3333, -0.0, -0.0, -0.0, 0.0, 0.0, 0.0, 0.0]
+     Veronese Gram spec: [1.3333, 1.3333, 1.3333, 1.3333, 1.3333, -0.0, -0.0, -0.0, 0.0, 0.0]
+     3D tight: True, 5D tight: True
+

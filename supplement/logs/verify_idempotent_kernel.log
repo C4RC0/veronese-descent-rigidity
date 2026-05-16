@@ -1,0 +1,40 @@
+Petersen spectrum (descending): [3.0, 1.0, 1.0, 1.0, 1.0, 1.0, -2.0, -2.0, -2.0, -2.0]
+  expected: [3, 1, 1, 1, 1, 1, -2, -2, -2, -2]
+
+K vs K_alt (closed form) match: True
+
+trace(E_1) = 5.000000 (should equal mult = 5)
+E_1 is idempotent: ||E_1^2 - E_1|| = 8.63e-16
+
+||K - 2 * E_1|| = 2.35e-15
+Claim 1: K == 2 * E_1: True
+
+Found 5 4-cocliques (expected 5)
+sum of 5 indicator vectors: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+  (each vertex sits in exactly 2 of the 5 stars: 2-subset has 2 elements)
+  K * 1_{star 0} = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  K * 1_{star 1} = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  K * 1_{star 2} = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  K * 1_{star 3} = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  K * 1_{star 4} = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+||K * S|| = 7.13e-16
+All indicators in ker K: True
+
+rank(S) = 5,  rank(K) = 5,  nullity(K) = 5
+Claim 2 (dim match): True
+Claim 2: ker K = span of 5 4-coclique indicators: True
+
+Geometric consequence: for each 4-coclique C_a (star around x in {0..4}),
+    sum_{i in C_a} U_i  should equal  0  (zero matrix).
+
+  star around x=0: indices [0, 1, 2, 3]
+    ||sum_C U_i|| = 7.85e-17
+  star around x=1: indices [0, 4, 5, 6]
+    ||sum_C U_i|| = 7.85e-17
+  star around x=2: indices [1, 4, 7, 8]
+    ||sum_C U_i|| = 7.85e-17
+  star around x=3: indices [2, 5, 7, 9]
+    ||sum_C U_i|| = 0.00e+00
+  star around x=4: indices [3, 6, 8, 9]
+    ||sum_C U_i|| = 7.85e-17

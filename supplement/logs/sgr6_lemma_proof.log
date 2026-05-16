@@ -1,0 +1,22 @@
+======================================================================
+SGR Lemma for 6-vertex equiangular orbit (single-distance K_6)
+======================================================================
+n = 6, |H_ij| = 1/sqrt(5) for i != j, target rank = 3, PSD
+Aut(K_6) = S_6, order 720
+
+raw rank-3 PSD signed lifts:                48
+classes modulo switching + S_6:             1
+representative numerical eigenvalues:       [-0.0, 0.0, 0.0, 2.0, 2.0, 2.0]
+representative rank:                        3
+representative is PSD:                      True
+
+Representative H (icosahedral 6-vertex Gram):
+Matrix([[1, sqrt(5)/5, sqrt(5)/5, sqrt(5)/5, sqrt(5)/5, sqrt(5)/5], [sqrt(5)/5, 1, sqrt(5)/5, sqrt(5)/5, -sqrt(5)/5, -sqrt(5)/5], [sqrt(5)/5, sqrt(5)/5, 1, -sqrt(5)/5, sqrt(5)/5, -sqrt(5)/5], [sqrt(5)/5, sqrt(5)/5, -sqrt(5)/5, 1, -sqrt(5)/5, sqrt(5)/5], [sqrt(5)/5, -sqrt(5)/5, sqrt(5)/5, -sqrt(5)/5, 1, sqrt(5)/5], [sqrt(5)/5, -sqrt(5)/5, -sqrt(5)/5, sqrt(5)/5, sqrt(5)/5, 1]])
+
+Seidel matrix S = sqrt(5) * (H - I) spectrum: [2.23606798, 2.23606798, 2.23606798, -2.23606798, -2.23606798, -2.23606798]
+  (classical regular two-graph: {sqrt(5)^3, -sqrt(5)^3})
+
+V^T V (should be 2 * I_3 since trace(H) = 6, rank 3):
+[[ 2. -0.  0.]
+ [-0.  2. -0.]
+ [ 0. -0.  2.]]

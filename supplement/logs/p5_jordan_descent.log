@@ -1,0 +1,50 @@
+======================================================================
+Claim 1: U_i has spectrum (2/3, -1/3, -1/3)  -- Veronese image
+======================================================================
+  U_0 eigenvalues: [0.666666666667, -0.333333333333, -0.333333333333]  |max err| = 1.11e-16  OK = True
+  U_1 eigenvalues: [0.666666666667, -0.333333333333, -0.333333333333]  |max err| = 1.11e-16  OK = True
+  U_2 eigenvalues: [0.666666666667, -0.333333333333, -0.333333333333]  |max err| = 1.11e-16  OK = True
+
+All 10 U_i match (2/3, -1/3, -1/3): True
+
+======================================================================
+Claim 2: -U_i is NOT a Veronese image (Schur T = -I excluded)
+======================================================================
+
+For W = -U to be a Veronese image, W + I/3 must be rank-1 PSD.
+Check eigenvalues of -U_i + I/3:
+  i = 0:  spec(W + I/3) = [0.666667, 0.666667, -0.333333]
+           rank-1 PSD?  False  (rank-1 needs two zero eigenvalues + one positive)
+  i = 1:  spec(W + I/3) = [0.666667, 0.666667, -0.333333]
+           rank-1 PSD?  False  (rank-1 needs two zero eigenvalues + one positive)
+  i = 2:  spec(W + I/3) = [0.666667, 0.666667, -0.333333]
+           rank-1 PSD?  False  (rank-1 needs two zero eigenvalues + one positive)
+
+Analytically: U_i has eigenvalues (2/3, -1/3, -1/3), so
+  -U_i has eigenvalues (-2/3, 1/3, 1/3), and
+  -U_i + I/3 has eigenvalues (-1/3, 2/3, 2/3).
+This matrix has a NEGATIVE eigenvalue (-1/3), so it is NOT PSD.
+Hence  -U_i + I/3  cannot equal  v v^T  for any v in R^3.
+CONCLUSION: -U_i is NOT in the Veronese image of R^3.
+
+======================================================================
+Claim 3: 10-dim A_5-permutation rep = 1 + 4 + 5  (5-irrep mult 1)
+======================================================================
+
+A_5 character on 10-dim unsigned perm rep:
+  character value distribution: Counter({0: 24, 1: 20, 2: 15, 10: 1})
+
+Element orders in A_5: Counter({5: 24, 3: 20, 2: 15, 1: 1})
+
+Character values by element order:
+  order 1: count=1, characters=Counter({10: 1})
+  order 2: count=15, characters=Counter({2: 15})
+  order 3: count=20, characters=Counter({1: 20})
+  order 5: count=24, characters=Counter({0: 24})
+
+<chi_10, chi_5>  (multiplicity of 5-irrep in 10-dim rep) = 1.0
+<chi_10, chi_1>  (trivial mult)  = 1.0
+<chi_10, chi_4>  (4-irrep mult)  = 1.0
+
+Expected decomposition of 10-dim A_5-perm-rep:  1 + 4 + 5
+(matches the Petersen/Johnson scheme decomposition)

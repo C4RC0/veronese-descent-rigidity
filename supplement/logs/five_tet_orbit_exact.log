@@ -1,0 +1,80 @@
+
+======================================================================
+Verifying root: s_4 = (sqrt(3) - sqrt(15)) / 8  =  -sqrt(15)/8 + sqrt(3)/8
+======================================================================
+
+Unit-norm check (c_k^2 + s_k^2 = 1):
+  k=1: c^2 + s^2 = 1
+  k=2: c^2 + s^2 = 1
+  k=3: c^2 + s^2 = 1
+  k=4: c^2 + s^2 = 1
+
+Canonical labeling (j_k, j_l, delta) per pair (k, l):
+  pair (1, 2): (1, 1, -1)
+  pair (1, 3): (2, 1, -1)
+  pair (1, 4): (3, 2, -1)
+  pair (2, 3): (3, 2, -1)
+  pair (2, 4): (2, 1, -1)
+  pair (3, 4): (3, 3, -1)
+
+Signed Gram matrix computed (10x10 exact).
+  Petersen-pattern check: PASS
+  Q == 8/9 I + 4/9 A + 1/9 J  (Proposition 2.1): PASS
+  rank(V) = 3  (so rank(G) = 3; expected 3): PASS
+
+======================================================================
+Verifying root: s_4 = (sqrt(3) + sqrt(15)) / 8  =  sqrt(3)/8 + sqrt(15)/8
+======================================================================
+
+Unit-norm check (c_k^2 + s_k^2 = 1):
+  k=1: c^2 + s^2 = 1
+  k=2: c^2 + s^2 = 1
+  k=3: c^2 + s^2 = 1
+  k=4: c^2 + s^2 = 1
+
+Canonical labeling (j_k, j_l, delta) per pair (k, l):
+  pair (1, 2): (1, 1, -1)
+  pair (1, 3): (2, 1, -1)
+  pair (1, 4): (3, 2, -1)
+  pair (2, 3): (3, 2, -1)
+  pair (2, 4): (2, 1, -1)
+  pair (3, 4): (3, 3, -1)
+
+Signed Gram matrix computed (10x10 exact).
+  Petersen-pattern check: PASS
+  Q == 8/9 I + 4/9 A + 1/9 J  (Proposition 2.1): PASS
+  rank(V) = 3  (so rank(G) = 3; expected 3): PASS
+
+======================================================================
+Orbit-belonging certificate: G^+ vs H_ico (= G^-)
+======================================================================
+Searching for (sigma, D) in S_5 x {+/-1}^10 such that
+   G^+ = P_sigma . D . H_ico . D . P_sigma^T
+in exact sympy arithmetic. The search is over 120 elements of S_5
+(with D[0] = +1 fixed; the remaining signs are forced).
+
+  SUCCESS: orbit equivalence verified exactly.
+    tau in S_5 (permutation of {0..4}):  (0, 1, 2, 4, 3)
+    induced sigma on 10 Kneser vertices:  [0, 1, 3, 2, 4, 6, 5, 8, 7, 9]
+    switching D in {+/-1}^10:  [1, 1, 1, 1, 1, 1, 1, 1, 1, -1]
+
+======================================================================
+Final summary
+======================================================================
+  '-'-root  Petersen ETF + rank-3 PSD check:  True
+  '+'-root  Petersen ETF + rank-3 PSD check:  True
+  Orbit equivalence (G^+ vs G^- under S_5 x switching):  True
+
+  Both algebraic branches of the canonical (eps, delta) case
+  produce 10-axis configurations whose signed Gram matrices
+  are switching- and S_5-equivalent in exact arithmetic.
+  Hence both lie in the icosahedral
+  O(3) x {+/-1}^10 x S_5  orbit (without invoking Theorem 2.3).
+
+  The other 15 consistent (eps, delta) cases are identified
+  with the canonical branch by the discrete switchings,
+  chirality changes, and S_5-relabellings recorded by the
+  enumeration routine in five_tet_hinge_enum.py; they are
+  NOT re-verified explicitly by this script.
+
+  EXACT orbit verification COMPLETE for the canonical branch.
