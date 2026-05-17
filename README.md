@@ -21,7 +21,6 @@ veronese-descent-rigidity/
 │   ├── main.tex             # Generated from main.md by build.sh
 │   ├── main.pdf             # Compiled PDF
 │   ├── references.bib       # Bibliography (12 entries)
-│   ├── build.sh             # Pandoc + LaTeX build script (md → tex → pdf)
 │   └── figures/             # Paper figures (PDF + PNG)
 ├── supplement/
 │   ├── supplement.md        # Reproducibility manifest (auditor-facing)
@@ -37,6 +36,7 @@ veronese-descent-rigidity/
 ├── LICENSE-CC-BY-4.0
 ├── CITATION.cff
 ├── MANIFEST.sha256          # SHA-256 hashes of every artefact
+├── build.sh                 # End-to-end build: md → tex → pdf + manifest
 └── .gitignore
 ```
 
@@ -77,18 +77,23 @@ expected outputs (§A.4), and the runtime table (§A.6).
 
 ## Building the PDF from source
 
-The manuscript source is `paper/main.md` (Markdown + LaTeX math).
-To regenerate `paper/main.pdf`:
+The single source of truth is `paper/references.bib` (bibliography) and
+`paper/main.md` (manuscript body before the `## References` heading).
+To regenerate everything — Markdown reference list, `main.tex`,
+`main.pdf`, and the repository-root `MANIFEST.sha256`:
 
 ```bash
-cd paper
 ./build.sh
 ```
 
-The script runs Pandoc (`main.md` → `main.tex`), applies a few small
-LaTeX-only patches (resizebox for the §1.1 cascade, `\path{}` and
-`\small` for the §8.2 table), and compiles with `pdflatex` twice. It
-reports any overfull boxes.
+The script (run from the repository root):
+
+1. Regenerates the `## References` section of `main.md` from `references.bib`.
+2. Runs Pandoc (`main.md` → `main.tex`).
+3. Applies small LaTeX-only patches (resizebox for the §1.1 cascade,
+   `\path{}` + `\small` for the §8.2 table).
+4. Compiles with `pdflatex` twice and reports any overfull boxes.
+5. Refreshes `MANIFEST.sha256` over every user-visible artefact.
 
 Requirements:
 

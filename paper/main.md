@@ -1011,53 +1011,49 @@ the certificate version.
 
 ---
 
+## Use of AI tools
+
+During the preparation of this manuscript, the author used Claude Opus 4.7
+(Anthropic) and GPT-5.5 Thinking (OpenAI) for exploratory mathematical
+reasoning, proof drafting, code review, language editing, and organisation
+of the reproducibility material.
+
+Every AI-suggested mathematical statement, proof step, and computational
+claim was checked by the author through a combination of manual derivation,
+executable computer-assisted certificates listed in §8, reproducibility
+logs archived with the supplementary material, and cross-checking against
+the existing literature.
+
+The author's professional background is in software engineering, not
+academic mathematics. The AI tools are not authors of this work. The
+author has reviewed all content and takes full responsibility for the
+mathematical claims, proofs, source code, figures, and references.
+
+---
+
 ## References
 
-[vLS66] J. H. van Lint and J. J. Seidel, *Equilateral point sets in
-elliptic geometry*, Proc. Koninkl. Nederl. Akad. Wetensch. Ser. A **69**
-= Indag. Math. **28** (1966), 335–348.
+[vLS66] J. H. van Lint and J. J. Seidel, *Equilateral point sets in elliptic geometry*, Proceedings of the Koninklijke Nederlandse Akademie van Wetenschappen, Series A **69** (1966), 335–348.
 
-[LS73] P. W. H. Lemmens and J. J. Seidel, *Equiangular lines*,
-J. Algebra **24** (1973), 494–512.
+[LS73] P. W. H. Lemmens and J. J. Seidel, *Equiangular lines*, Journal of Algebra **24** (1973), 494–512.
 
-[DGS75] P. Delsarte, J. M. Goethals and J. J. Seidel, *Bounds for systems
-of lines, and Jacobi polynomials*, Philips Research Reports **30**
-(1975), 91–105.
+[DGS75] P. Delsarte, J. M. Goethals and J. J. Seidel, *Bounds for systems of lines, and Jacobi polynomials*, Philips Research Reports **30** (1975), 91–105.
 
-[DGS77] P. Delsarte, J. M. Goethals and J. J. Seidel, *Spherical codes
-and designs*, Geometriae Dedicata **6** (1977), 363–388.
+[DGS77] P. Delsarte, J. M. Goethals and J. J. Seidel, *Spherical codes and designs*, Geometriae Dedicata **6** (1977), 363–388.
 
-[CGSS76] P. J. Cameron, J. M. Goethals, J. J. Seidel and E. E. Shult,
-*Line graphs, root systems, and elliptic geometry*, J. Algebra **43**
-(1976), 305–327.
+[CGSS76] P. J. Cameron, J. M. Goethals, J. J. Seidel and E. E. Shult, *Line graphs, root systems, and elliptic geometry*, Journal of Algebra **43** (1976), 305–327.
 
-[Tay77] D. E. Taylor, *Regular 2-graphs*, Proc. London Math. Soc. (3)
-**35** (1977), 257–274.
+[Tay77] D. E. Taylor, *Regular 2-graphs*, Proceedings of the London Mathematical Society (3) **35** (1977), 257–274.
 
-[Sei76] J. J. Seidel, *A survey of two-graphs*, in: *Atti Convegno
-Internazionale Teorie Combinatorie* (Rome, 1973), Tomo I, Accademia
-Nazionale dei Lincei, Roma, 1976, 481–511.
+[Sei76] J. J. Seidel, *A survey of two-graphs*, in: *Atti del Convegno Internazionale di Teorie Combinatorie (Rome, 1973), Tomo I*, Accademia Nazionale dei Lincei, Roma, 1976, 481–511.
 
-[BCN89] A. E. Brouwer, A. M. Cohen and A. Neumaier, *Distance-Regular
-Graphs*, Ergebnisse der Mathematik und ihrer Grenzgebiete (3), Vol. 18,
-Springer, Berlin, 1989.
+[BCN89] A. E. Brouwer, A. M. Cohen and A. Neumaier, *Distance-Regular Graphs*, Ergebnisse der Mathematik und ihrer Grenzgebiete (3) **18**, Springer, Berlin, 1989.
 
-[BvM22] A. E. Brouwer and H. Van Maldeghem, *Strongly Regular Graphs*,
-Encyclopedia of Mathematics and its Applications, Vol. 182, Cambridge
-University Press, Cambridge, 2022.
+[BvM22] A. E. Brouwer and H. Van Maldeghem, *Strongly Regular Graphs*, Encyclopedia of Mathematics and its Applications **182**, Cambridge University Press, Cambridge, 2022.
 
-[God93] C. D. Godsil, *Algebraic Combinatorics*, Chapman and Hall,
-New York, 1993.
+[God93] C. D. Godsil, *Algebraic Combinatorics*, Chapman and Hall, New York, 1993.
 
-[Wal18] S. F. D. Waldron, *An Introduction to Finite Tight Frames*,
-Applied and Numerical Harmonic Analysis, Birkhäuser, 2018.
+[Wal18] Shayne F. D. Waldron, *An Introduction to Finite Tight Frames*, Applied and Numerical Harmonic Analysis, Birkhäuser, 2018.
 
 [Cox73] H. S. M. Coxeter, *Regular Polytopes*, 3rd ed., Dover, New York, 1973.
 
-## Use of AI tools
-
-AI-assisted tools were used during the preparation of this manuscript for
-language editing, code review, exploratory reasoning, and organisation of
-the reproducibility material. The final mathematical statements, proofs,
-source code, computational certificates, and references were checked by the
-author. The author takes full responsibility for all content.
