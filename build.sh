@@ -262,12 +262,66 @@ PY
 sed -i 's/120°/120^\\circ/g' main.tex   # no-op if already done in main.md
 
 # ---------------------------------------------------------------------
-# Compile twice so the longtable widths and cross-references settle.
+# Patch 5: convert in-text [KEY] / [K1, K2, ...] citations to \cite{...}
+#          and replace the Pandoc-rendered "References" subsection with
+#          a proper \bibliography{references} call. This wires up the
+#          standard LaTeX/BibTeX pipeline so the linter sees every .bib
+#          entry being used, and the bibliography is generated from the
+#          .bib file directly.
 # ---------------------------------------------------------------------
-echo "[4/6] pdflatex (pass 1)"
+python3 - <<'PY'
+import re
+
+path = "main.tex"
+src = open(path).read()
+
+# Parse the bib once to get the canonical key list.
+bib = open("references.bib").read()
+keys = set(re.findall(r"@\w+\s*\{\s*([^,\s]+)\s*,", bib))
+
+
+def cite_sub(m):
+    inside = m.group(1)
+    parts = [p.strip() for p in inside.split(",")]
+    if parts and all(p in keys for p in parts):
+        return "\\cite{" + ",".join(parts) + "}"
+    return m.group(0)  # leave untouched if not a list of bib keys
+
+
+# Match [KEY] or [K1, K2, ...]; allow line breaks inside the bracket.
+src = re.sub(
+    r"\[\s*((?:[A-Za-z][A-Za-z0-9]*)(?:\s*,\s*[A-Za-z][A-Za-z0-9]*)*)\s*\]",
+    cite_sub,
+    src,
+    flags=re.DOTALL,
+)
+
+# Replace the Pandoc-rendered References subsection (everything from
+# "\subsection{References}" up to "\end{document}") with the standard
+# bibliography call.
+pat = re.compile(
+    r"\\subsection\{References\}\\label\{references\}.*?(?=\\end\{document\})",
+    re.DOTALL,
+)
+src = pat.sub(
+    "\\\\bibliographystyle{plain}\n\\\\bibliography{references}\n\n",
+    src,
+)
+
+open(path, "w").write(src)
+PY
+
+# ---------------------------------------------------------------------
+# Compile: pdflatex -> bibtex -> pdflatex -> pdflatex
+# (extra passes so longtable widths, cross-references, and the
+# bibliography settle.)
+# ---------------------------------------------------------------------
+echo "[4/6] pdflatex (pass 1) + bibtex + pdflatex (pass 2 + 3)"
 pdflatex -interaction=nonstopmode main.tex >/tmp/pdflatex1.log
-echo "[5/6] pdflatex (pass 2)"
+bibtex main >/tmp/bibtex.log
 pdflatex -interaction=nonstopmode main.tex >/tmp/pdflatex2.log
+echo "[5/6] pdflatex (final pass)"
+pdflatex -interaction=nonstopmode main.tex >/tmp/pdflatex3.log
 
 # Report any overfull boxes (best-effort).
 overfull=$(grep -c "Overfull" main.log || true)
