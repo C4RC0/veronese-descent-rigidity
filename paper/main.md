@@ -502,7 +502,7 @@ Each Petersen vertex lies in exactly $2$ of the $5$ stars.
 $\dim \ker K = 10 - 5 = 5$. It suffices to exhibit $5$ linearly
 independent vectors in $\ker K$.
 
-*Each $\mathbf{1}_{C_x}$ lies in $\ker K$.* For a vertex
+**Each $\mathbf{1}_{C_x}$ lies in $\ker K$.** For a vertex
 $v = \{a, b\} \in V(K(5,2))$ we compute the entries of
 $K\,\mathbf{1}_{C_x}$ using $K = (4/3)I + (2/3)A - (1/3)J$:
 
@@ -518,7 +518,7 @@ $K\,\mathbf{1}_{C_x}$ using $K = (4/3)I + (2/3)A - (1/3)J$:
 
 Hence $K\,\mathbf{1}_{C_x} = 0$ for each $x \in \{1,\dots,5\}$.
 
-*The five indicators are linearly independent.* For $x \neq y$,
+**The five indicators are linearly independent.** For $x \neq y$,
 $|C_x \cap C_y| = |\{\{x, y\}\}| = 1$, and $|C_x| = 4$. So the
 $5\times 5$ Gram matrix of $\{\mathbf{1}_{C_x}\}_x$ is
 $3\,I_5 + J_5$, whose eigenvalues are $3$ (multiplicity $4$) and $8$
@@ -758,7 +758,7 @@ of $(\varepsilon, \delta) \in \{\pm 1\}^4 \times \{\pm 1\}^6$:
 | Rank-$7$ linear $+$ canonical quadratic | $16$ (1.6%) | $2$ real roots each |
 | Full-rank linear $+$ unit-norm invalid | $16$ (1.6%) | no solution |
 
-*Total: $992 + 16 + 16 = 1024$. All $16$ consistent cases reduce in
+Total: $992 + 16 + 16 = 1024$. All $16$ consistent cases reduce in
 exact arithmetic to the same canonical quadratic
 $4 s^2 - \sqrt{3}\,s - 3/4 = 0$ (in the null-space parameter, up to
 linear scaling), yielding $16 \cdot 2 = 32$ raw algebraic solutions.
@@ -772,7 +772,7 @@ symbolic arithmetic. The remaining 15 consistent sign cases are
 identified with this canonical branch by the discrete switchings,
 chirality changes, and $S_5$-relabellings recorded by the enumeration
 certificate. Hence all $32$ surviving algebraic solutions lie in the
-icosahedral $O(3) \times \{\pm 1\}^{10} \times S_5$-orbit.*
+icosahedral $O(3) \times \{\pm 1\}^{10} \times S_5$-orbit.
 
 *Proof (executable certificate).* Direct enumeration in
 [`five_tet_hinge_enum.py`](../scripts/five_tet_hinge_enum.py). The
