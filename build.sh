@@ -312,6 +312,14 @@ open(path, "w").write(src)
 PY
 
 # ---------------------------------------------------------------------
+# Patch 6: swap raster figure paths in \includegraphics to the vector
+#          PDF versions. main.md keeps .png so figures still render on
+#          GitHub's Markdown view; the LaTeX/arXiv build uses .pdf for
+#          true vector quality (matplotlib output is vector-native).
+# ---------------------------------------------------------------------
+sed -i -E 's|(\\includegraphics(\[[^]]*\])?\{figures/[A-Za-z0-9_.-]+)\.png\}|\1.pdf}|g' main.tex
+
+# ---------------------------------------------------------------------
 # Compile: pdflatex -> bibtex -> pdflatex -> pdflatex
 # (extra passes so longtable widths, cross-references, and the
 # bibliography settle.)
