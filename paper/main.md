@@ -100,8 +100,10 @@ unique up to switching and Petersen automorphism.
 > satisfying the Petersen magnitude pattern,
 >
 > $$
-> |v_i \cdot v_j| = \sqrt{5}/3 \text{ on Petersen edges},\quad
-> |v_i \cdot v_j| = 1/3 \text{ on complement edges} \;(i \neq j),
+> \begin{aligned}
+> |v_i \cdot v_j| &= \sqrt{5}/3 \quad \text{on Petersen edges},\\
+> |v_i \cdot v_j| &= 1/3 \quad \text{on complement edges } (i \neq j),
+> \end{aligned}
 > $$
 >
 > and assume moreover that the vectors span $\mathbb{R}^3$ — equivalently,
@@ -130,31 +132,8 @@ unique up to switching and Petersen automorphism.
 
 ### 1.3 The proof cascade
 
-$$
-\boxed{
-\begin{array}{c}
-\text{Petersen} \\ \text{adjacency } A
-\end{array}
-\;\xrightarrow{\textbf{Thm 1}}\;
-\begin{array}{c}
-K = 2 E_1 \\ \text{10-line ETF in } \mathbb{R}^5
-\end{array}
-\;\xrightarrow{\textbf{Thm 5.6}}\;
-\begin{array}{c}
-A_5\text{-equivariant} \\ \text{Veronese lift}
-\end{array}
-\;\xrightarrow{\textbf{Thm 4.3}}\;
-\begin{array}{c}
-\text{unique projective} \\ \mathbb{RP}^2 \text{-configuration}
-\end{array}
-\;\xrightarrow{\textbf{Thm 3}}\;
-\begin{array}{c}
-\text{signed Gram} \\ \text{rigidity of } H
-\end{array}
-}
-$$
-
-The two middle arrows together constitute the proof of Theorem 2: the
+The proof cascade is shown in Figure 1. The two middle arrows together
+constitute the proof of Theorem 2: the
 **five-tetrahedra hinge bridge** (Theorem 5.6, §5) installs the
 $A_5$-symmetry, and the **equivariant Veronese descent** (Theorem 4.3, §4)
 uses Schur's lemma and the spectral obstruction to upgrade it to
@@ -606,10 +585,10 @@ Fix the first tetrahedron $T_0$ to a standard cube-inscribed position
 with vertices
 
 $$
-a_1 = \tfrac{1}{\sqrt{3}}(1,1,1),\quad
-a_2 = \tfrac{1}{\sqrt{3}}(1,-1,-1),\quad
-a_3 = \tfrac{1}{\sqrt{3}}(-1,1,-1),\quad
-a_4 = \tfrac{1}{\sqrt{3}}(-1,-1,1).
+\begin{aligned}
+a_1 &= \tfrac{1}{\sqrt{3}}(1,1,1), & a_2 &= \tfrac{1}{\sqrt{3}}(1,-1,-1),\\
+a_3 &= \tfrac{1}{\sqrt{3}}(-1,1,-1), & a_4 &= \tfrac{1}{\sqrt{3}}(-1,-1,1).
+\end{aligned}
 $$
 
 For $k = 1,\ldots,4$, the tetrahedron $T_k$ shares the axis
@@ -620,9 +599,12 @@ $a_k^\perp$ at signed offset $-\varepsilon_k/3$, parameterised by a
 single rotation angle $\phi_k \in [0, 2\pi)$:
 
 $$
-u_k^{(j)}(\phi_k) = -\tfrac{\varepsilon_k}{3}\,a_k + \tfrac{2\sqrt{2}}{3}\,
-  \left(\cos(\phi_k + j\cdot 120°)\,\hat e_1^{(k)} + \sin(\phi_k + j\cdot 120°)\,\hat e_2^{(k)}\right),
+\begin{aligned}
+u_k^{(j)}(\phi_k) = -\tfrac{\varepsilon_k}{3}\,a_k
+  + \tfrac{2\sqrt{2}}{3}\Big( &\cos(\phi_k + j\cdot 120^\circ)\,\hat e_1^{(k)} \\
+  & + \sin(\phi_k + j\cdot 120^\circ)\,\hat e_2^{(k)} \Big),
   \quad j = 0,1,2.
+\end{aligned}
 $$
 
 The $K_5$-incidence between $T_k$ and $T_l$ ($1 \le k < l \le 4$, not

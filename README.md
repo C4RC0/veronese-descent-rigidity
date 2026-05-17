@@ -17,7 +17,11 @@ Theorem**.
 ```
 veronese-descent-rigidity/
 ├── paper/
-│   ├── main.md              # Manuscript (Markdown + LaTeX math)
+│   ├── main.md              # Manuscript source (Markdown + LaTeX math)
+│   ├── main.tex             # Generated from main.md by build.sh
+│   ├── main.pdf             # Compiled PDF
+│   ├── references.bib       # Bibliography (12 entries)
+│   ├── build.sh             # Pandoc + LaTeX build script (md → tex → pdf)
 │   └── figures/             # Paper figures (PDF + PNG)
 ├── supplement/
 │   ├── supplement.md        # Reproducibility manifest (auditor-facing)
@@ -70,6 +74,32 @@ python3 scripts/figures/fig4_hinge_bridge.py
 
 See `supplement/supplement.md` (§A.2) for the full script-to-theorem mapping,
 expected outputs (§A.4), and the runtime table (§A.6).
+
+## Building the PDF from source
+
+The manuscript source is `paper/main.md` (Markdown + LaTeX math).
+To regenerate `paper/main.pdf`:
+
+```bash
+cd paper
+./build.sh
+```
+
+The script runs Pandoc (`main.md` → `main.tex`), applies a few small
+LaTeX-only patches (resizebox for the §1.1 cascade, `\path{}` and
+`\small` for the §8.2 table), and compiles with `pdflatex` twice. It
+reports any overfull boxes.
+
+Requirements:
+
+- `pandoc >= 3.0`
+- A TeX Live install with `pdflatex`, `amsmath`, `amssymb`, `graphicx`,
+  `longtable`, `booktabs`, `url`, `hyperref` (e.g. `texlive-scheme-medium`
+  on Fedora).
+
+If you only need to view the rendered manuscript without rebuilding, open
+`paper/main.pdf` directly, or read `paper/main.md` on GitHub (the math
+renders via KaTeX).
 
 ## Verifying artefact integrity
 
