@@ -1,5 +1,7 @@
 # Veronese Descent Rigidity of the Petersen ETF
 
+![Six-panel interactive visualisation of the Petersen ETF, its Veronese lift, and the icosahedral five-tetrahedra compound.](viz/veronese_preview.png)
+
 Manuscript, exact algebraic certificates, and reproduction logs for the paper
 **"Veronese Descent Rigidity of the Petersen Equiangular Tight Frame"**.
 
