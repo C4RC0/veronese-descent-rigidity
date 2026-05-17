@@ -1,7 +1,8 @@
 # Veronese Descent Rigidity of the Petersen Equiangular Tight Frame
 
 **Charles K. Bori**  
-Independent researcher
+Independent researcher  
+ORCID: [0009-0000-9194-9673](https://orcid.org/0009-0000-9194-9673)
 
 ## Abstract
 

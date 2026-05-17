@@ -6,6 +6,7 @@ authors:
   - family-names: "Bori"
     given-names: "Charles K."
     alias: "C4RC0"
+    orcid: "https://orcid.org/0009-0000-9194-9673"
 repository-code: "https://github.com/C4RC0/veronese-descent-rigidity"
 license: MIT
 keywords:
@@ -23,4 +24,5 @@ preferred-citation:
     - family-names: "Bori"
       given-names: "Charles K."
       alias: "C4RC0"
+      orcid: "https://orcid.org/0009-0000-9194-9673"
   year: 2026
