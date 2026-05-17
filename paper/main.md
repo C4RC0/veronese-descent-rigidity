@@ -95,14 +95,16 @@ unique up to switching and Petersen automorphism.
 > equals $2\,E_1$, where $E_1$ is the primitive idempotent of the
 > Petersen association scheme corresponding to the eigenvalue $1$ of $A$.
 
-> **Theorem 2 (Veronese descent rigidity).** *Let
+> **Theorem 2 (Veronese descent rigidity).** Let
 > $v_0, v_1, \ldots, v_9 \in S^2 \subset \mathbb{R}^3$ be unit vectors
-> satisfying the Petersen magnitude pattern,*
+> satisfying the Petersen magnitude pattern,
+>
 > $$
 > |v_i \cdot v_j| = \sqrt{5}/3 \text{ on Petersen edges},\quad
 > |v_i \cdot v_j| = 1/3 \text{ on complement edges} \;(i \neq j),
 > $$
-> *and assume moreover that the vectors span $\mathbb{R}^3$ — equivalently,
+>
+> and assume moreover that the vectors span $\mathbb{R}^3$ — equivalently,
 > the Gram matrix $V V^{\mathsf T}$ has rank exactly $3$, where $V$ is
 > the $10\times 3$ matrix with rows $v_i$. Set
 > $U_i := \nu_2(v_i) = v_i v_i^{\mathsf T} - \tfrac{1}{3}I$.
@@ -110,7 +112,7 @@ unique up to switching and Petersen automorphism.
 > realises the 10-line Petersen ETF in $\mathbb{R}^5$ (Theorem 1 and
 > Corollary 2.2), and the projective configuration
 > $\{[v_i]\} \subset \mathbb{RP}^2$ is $\,(O(3) \times S_5)$-equivalent
-> to the icosahedral face-normal configuration.*
+> to the icosahedral face-normal configuration.
 
 > **Theorem 3 (Signed Gram Rigidity, corollary).** Let $H \in
 > \mathbb{R}^{10\times 10}$ be a real symmetric matrix satisfying
@@ -304,12 +306,12 @@ specialisations, the standard reference is Waldron [Wal18].
 
 ### 2.5 Classical uniqueness of the 10-line ETF
 
-> **Theorem 2.3 (van Lint-Seidel, Lemmens-Seidel, Taylor).** *The
+> **Theorem 2.3 (van Lint-Seidel, Lemmens-Seidel, Taylor).** The
 > 10-line equiangular line system in $\mathbb{R}^5$ with common angle
 > $\arccos(1/3)$ is unique up to orthogonal equivalence and
 > relabelling; equivalently, the regular two-graph on 10 vertices
 > with Seidel spectrum $\{3^{(5)},\,(-3)^{(5)}\}$ is unique up to
-> switching.*
+> switching.
 
 We use this as a black box; the references [vLS66, LS73, Tay77, Sei76, BvM22]
 provide the original proofs and an extended modern treatment. The
@@ -482,7 +484,7 @@ for each $x \in \{1,\ldots,5\}$, the **star around $x$** is the
 4-coclique
 
 $$
-C_x \;:=\; \left\lbrace  \{x, y\} : y \in \{1,\ldots,5\} \setminus \{x\} \right\rbrace 
+C_x \;:=\; \{ \{x, y\} : y \in \{1,\ldots,5\} \setminus \{x\} \}
         \;\subset\; V(K(5,2)).
 $$
 
@@ -493,7 +495,7 @@ Each Petersen vertex lies in exactly $2$ of the $5$ stars.
 > 4-cocliques:
 >
 > $$
-> \ker K = \mathrm{span}\left\lbrace \mathbf{1}_{C_1},\ldots,\mathbf{1}_{C_5}\right\rbrace .
+> \ker K = \mathrm{span}\{\mathbf{1}_{C_1},\ldots,\mathbf{1}_{C_5}\}.
 > $$
 
 *Proof.* By Theorem 1, $K = 2 E_1$ has rank $5$, so
@@ -574,13 +576,13 @@ configuration of a regular tetrahedron in $\mathbb{RP}^2$.
 
 ### 5.3 The $K_5$-incidence structure (projective)
 
-> **Convention.** *From this point on, the five tetrahedra
+> **Convention.** From this point on, the five tetrahedra
 > $T_x \subset \mathbb{R}^3$ are considered **projectively** — i.e., as
 > configurations of vertex-axes (lines through the origin) rather than
 > oriented vectors. The local switchings $v_i \mapsto -v_i$ provided by
 > Lemma 5.2 are absorbed into the projective interpretation, so the
 > hinge constraints below are equations between projective points in
-> $\mathbb{RP}^2$.*
+> $\mathbb{RP}^2$.
 
 Each Petersen vertex lies in exactly $2$ of the $5$ stars (since each
 2-subset $\{a,b\}$ is in $C_a$ and $C_b$). Therefore each pair of
@@ -641,11 +643,11 @@ overdetermined.
 The sub-vertex pairings $(\pi_k)$ admit a discrete symmetry: which axis of
 $T_k$ is labelled with which Kneser-pair $\{k,l\}$.
 
-> **Lemma 5.3 (Labeling Reduction).** *Let $\mathcal{L}$ denote the set
+> **Lemma 5.3 (Labeling Reduction).** Let $\mathcal{L}$ denote the set
 > of admissible labelings — bijections from the $10$ shared axes onto
 > $\binom{\{0,\dots,4\}}{2}$ compatible with the $K_5$-incidence on the
 > five tetrahedra. Then $\mathcal{L}$ is a single orbit under
-> $\mathrm{Aut}(K(5,2)) = S_5$.*
+> $\mathrm{Aut}(K(5,2)) = S_5$.
 
 *Proof.* For $\lambda_1, \lambda_2 \in \mathcal{L}$, set
 $\sigma = \lambda_2 \circ \lambda_1^{-1}$, a permutation of
@@ -682,10 +684,10 @@ $s_k = \sin\phi_k$; the hinge equations become **linear** in
 $(c_1, s_1, \ldots, c_4, s_4)$.
 
 > **Theorem 5.4 (Hinge rigidity, canonical labeling — finite exact
-> certificate).** *With the canonical labeling and a chirality
+> certificate).** With the canonical labeling and a chirality
 > $\varepsilon = (-1,-1,-1,-1)$, hinge-sign
 > $\delta = (-1,-1,-1,-1,-1,-1)$, the $18\times 8$ linear system has
-> rank $7$ with $1$-parameter solution family*
+> rank $7$ with $1$-parameter solution family
 >
 > $$
 > c_1 = c_2 = -\tfrac{1}{4},\quad c_3 = c_4 = \sqrt{3}\,s_4 - \tfrac{1}{2},
@@ -695,26 +697,23 @@ $(c_1, s_1, \ldots, c_4, s_4)$.
 > s_1 = s_2 = 2\,s_4 - \tfrac{\sqrt{3}}{4},\quad s_3 = s_4 \text{ (free)}.
 > $$
 >
-> *The four unit-norm constraints $c_k^2 + s_k^2 = 1$ reduce to the
-> same quadratic*
+> The four unit-norm constraints $c_k^2 + s_k^2 = 1$ reduce to the
+> same quadratic
 >
 > $$
 > \boxed{\;4\,s_4^2 - \sqrt{3}\,s_4 - \tfrac{3}{4} \;=\; 0\;}
 > $$
 >
-> *with discriminant $15$ and the two real roots*
+> with discriminant $15$ and the two real roots
 >
 > $$
-> s_4 \in \left\lbrace 
->   \frac{\sqrt{3} - \sqrt{15}}{8},\;
->   \frac{\sqrt{3} + \sqrt{15}}{8}
-> \right\rbrace 
+> s_4 \in \{\, (\sqrt{3} - \sqrt{15})/8,\;\; (\sqrt{3} + \sqrt{15})/8 \,\}
 > \subset \mathbb{Q}(\sqrt{3}, \sqrt{5}).
 > $$
 >
-> *The "$-$"-root recovers the classical icosahedral compound of five
+> The "$-$"-root recovers the classical icosahedral compound of five
 > tetrahedra. The "$+$"-root is not discarded; it is one of the algebraic
-> branches accounted for in the global enumeration of Theorem 5.5.*
+> branches accounted for in the global enumeration of Theorem 5.5.
 
 *Proof (executable certificate).* The reduction is verified by exact
 symbolic computation in
@@ -802,12 +801,12 @@ chirality change, and $S_5$-relabelling. $\square$
 ### 5.8 The bridge theorem
 
 > **Theorem 5.6 (Bridge: rank-3 lift implies $A_5$-equivariance).**
-> *Let $H$ satisfy the SGR conditions of Theorem 3. Then the associated
+> Let $H$ satisfy the SGR conditions of Theorem 3. Then the associated
 > Veronese-lift $\{U_i = \nu_2(v_i)\}$ is $A_5$-equivariant: the
 > Petersen automorphism subgroup $A_5 \subset S_5$, corresponding under
 > the icosahedral identification to the orientation-preserving rotations,
 > acts on $\{U_i\}$ by elements of $O(3)$ via an icosahedral
-> 3-dimensional irreducible embedding $A_5 \hookrightarrow SO(3)$.*
+> 3-dimensional irreducible embedding $A_5 \hookrightarrow SO(3)$.
 
 *Proof.* Lemma 5.2 produces the 5 regular tetrahedra with $K_5$-incidence.
 By the Labeling Reduction Lemma 5.3, after applying a permutation in
