@@ -119,10 +119,9 @@ from a CDN, so an internet connection is required on first load.
 
 ## Citing
 
-Until a Zenodo DOI is assigned at the first arXiv-stable release, please
-cite this repository directly via the commit hash and the GitHub URL
-(see `CITATION.cff`). The manuscript will provide the canonical citation
-once the DOI is in place.
+The executable certificates and reproducibility material are archived at
+Zenodo with DOI [10.5281/zenodo.20258339](https://doi.org/10.5281/zenodo.20258339).
+Citation metadata is in `CITATION.cff`.
 
 ## License
 

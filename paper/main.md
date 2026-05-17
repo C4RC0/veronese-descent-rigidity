@@ -1000,15 +1000,14 @@ the supplementary material.
 
 ### 8.6 Data and code availability
 
-All scripts used for the finite exact algebraic certificates, together
-with reproduction logs and the SHA-256 manifest of every artefact, are
-publicly archived in the repository
+The executable certificates and reproducibility material are archived
+at Zenodo:
+
+> **<https://doi.org/10.5281/zenodo.20258339>**
+
+The development repository is available at
 
 > **<https://github.com/C4RC0/veronese-descent-rigidity>**
-
-A versioned Zenodo DOI will be assigned at the first arXiv-stable
-release; until that point the GitHub commit hash uniquely identifies
-the certificate version.
 
 ---
 

@@ -8,6 +8,10 @@ authors:
     alias: "C4RC0"
     orcid: "https://orcid.org/0009-0000-9194-9673"
 repository-code: "https://github.com/C4RC0/veronese-descent-rigidity"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20258339"
+    description: "Zenodo archive of the v0.1.0 release"
 license: MIT
 keywords:
   - Petersen graph
