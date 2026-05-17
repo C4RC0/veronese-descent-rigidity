@@ -59,7 +59,7 @@ def main():
     spec_bars(
         ax1, spec_U,
         color="#88c088",
-        title="(A) $U = v v^T - I/3 \\in \\nu_2(\\mathbb{RP}^2)$",
+        title="(A) $U = v v^T - I/3$ is a centred Veronese point",
         subtitle="$\\mathrm{spec}(U) = (2/3, -1/3, -1/3)$",
         is_psd=True,
         shift_label=("$U + I/3 = v v^T$:  $(1, 0, 0)$\n"
@@ -69,7 +69,7 @@ def main():
     spec_bars(
         ax2, spec_minus_U_plus_I3,
         color="#c08888",
-        title="(B) $-U \\notin \\nu_2(\\mathbb{RP}^2)$",
+        title="(B) $-U$ is not a centred Veronese point",
         subtitle="$\\mathrm{spec}(-U + I/3) = (-1/3, 2/3, 2/3)$",
         is_psd=False,
         shift_label=("negative eigenvalue $\\Rightarrow$ not PSD\n"

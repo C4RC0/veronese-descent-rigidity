@@ -55,7 +55,7 @@ def main():
         "Theorem 1: $K = 2E_1$\n(Bose–Mesner)",
         "Theorem 5.6: five-tetrahedra\nhinge bridge",
         "Theorem 4.3: Schur descent\n+ $-I$ spectral obstruction",
-        "Theorem 2 corollary:\n$H = V V^T$ factorisation",
+        "Theorem 3:\nrank-$3$ Gram factorisation",
     ]
 
     box_w = 7.8

@@ -482,7 +482,7 @@ for each $x \in \{1,\ldots,5\}$, the **star around $x$** is the
 4-coclique
 
 $$
-C_x \;:=\; \left\{ \{x, y\} : y \in \{1,\ldots,5\} \setminus \{x\} \right\}
+C_x \;:=\; \left\lbrace  \{x, y\} : y \in \{1,\ldots,5\} \setminus \{x\} \right\rbrace 
         \;\subset\; V(K(5,2)).
 $$
 
@@ -493,7 +493,7 @@ Each Petersen vertex lies in exactly $2$ of the $5$ stars.
 > 4-cocliques:
 >
 > $$
-> \ker K = \mathrm{span}\left\{\mathbf{1}_{C_1},\ldots,\mathbf{1}_{C_5}\right\}.
+> \ker K = \mathrm{span}\left\lbrace \mathbf{1}_{C_1},\ldots,\mathbf{1}_{C_5}\right\rbrace .
 > $$
 
 *Proof.* By Theorem 1, $K = 2 E_1$ has rank $5$, so
@@ -705,10 +705,10 @@ $(c_1, s_1, \ldots, c_4, s_4)$.
 > *with discriminant $15$ and the two real roots*
 >
 > $$
-> s_4 \in \left\{
+> s_4 \in \left\lbrace 
 >   \frac{\sqrt{3} - \sqrt{15}}{8},\;
 >   \frac{\sqrt{3} + \sqrt{15}}{8}
-> \right\}
+> \right\rbrace 
 > \subset \mathbb{Q}(\sqrt{3}, \sqrt{5}).
 > $$
 >

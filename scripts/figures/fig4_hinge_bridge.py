@@ -74,8 +74,8 @@ def draw_T0(ax):
     ax.set_zticks([])
     ax.view_init(elev=18, azim=30)
     ax.set_title("(A) Standard tetrahedron $T_0$\n"
-                 "$a_k = \\frac{1}{\\sqrt{3}}(\\pm 1, \\pm 1, \\pm 1)$ "
-                 "with even parity", fontsize=9)
+                 "$a_k = \\frac{1}{\\sqrt{3}}(\\pm 1, \\pm 1, \\pm 1)$, "
+                 "$\\prod \\mathrm{signs} = +1$", fontsize=9)
 
 
 # ----- Panel B: K_5-incidence -----
@@ -207,8 +207,8 @@ def draw_certificate(ax):
         ("partition TOTAL",            "1024",            "#222"),
         ("", "", "#222"),
         ("$16 \\times 2 = 32$ raw algebraic solutions", "", "#222"),
-        ("$\\Rightarrow$  all in icosahedral orbit", "", "#3a7d3a"),
-        ("(exact $(\\sigma, D)$ certificate, Theorem 5.5)", "", "#3a7d3a"),
+        ("$\\Rightarrow$ icosahedral orbit", "", "#3a7d3a"),
+        ("(exact $(\\sigma, D)$ + symmetry reduction)", "", "#3a7d3a"),
     ]
 
     y_top = 8.7
