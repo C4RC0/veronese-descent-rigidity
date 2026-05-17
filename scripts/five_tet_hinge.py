@@ -98,7 +98,7 @@ def hinge_residual(params, pi_map, delta_map):
              for Newton we fix eps_k from a discrete choice.)
 
     pi_map: dict (k, l) -> sub-index j in {0, 1, 2} for T_k's "(k,l)-vertex"
-            (k in {1..4}, l in {1..4}\{k})
+            (k in {1..4}, l in {1..4} \\ {k})
 
     delta_map: dict (k, l) -> +/-1, sign of the hinge equality
                (only for k < l; delta_{lk} = delta_{kl})

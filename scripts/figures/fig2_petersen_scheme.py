@@ -167,8 +167,8 @@ def main():
                 bbox_inches="tight")
     fig.savefig(os.path.join(OUT, "fig2_petersen_scheme.png"),
                 bbox_inches="tight", dpi=200)
-    print(f"Wrote {os.path.join(OUT, 'fig2_petersen_scheme.pdf')}")
-    print(f"Wrote {os.path.join(OUT, 'fig2_petersen_scheme.png')}")
+    print("Wrote paper/figures/fig2_petersen_scheme.pdf")
+    print("Wrote paper/figures/fig2_petersen_scheme.png")
 
 
 if __name__ == "__main__":

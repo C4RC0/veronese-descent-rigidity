@@ -4,7 +4,7 @@ title: "Executable certificates for Veronese descent rigidity of the Petersen ET
 type: software
 authors:
   - family-names: "Bori"
-    given-names: "Karoly"
+    given-names: "Charles K."
     alias: "C4RC0"
 repository-code: "https://github.com/C4RC0/veronese-descent-rigidity"
 license: MIT
@@ -20,6 +20,7 @@ preferred-citation:
   type: article
   title: "Veronese Descent Rigidity of the Petersen Equiangular Tight Frame"
   authors:
-    - family-names: "TBD"
-      given-names: "TBD"
+    - family-names: "Bori"
+      given-names: "Charles K."
+      alias: "C4RC0"
   year: 2026

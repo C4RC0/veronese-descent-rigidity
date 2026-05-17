@@ -245,8 +245,8 @@ def main():
                 bbox_inches="tight")
     fig.savefig(os.path.join(OUT, "fig4_hinge_bridge.png"),
                 bbox_inches="tight", dpi=200)
-    print(f"Wrote {os.path.join(OUT, 'fig4_hinge_bridge.pdf')}")
-    print(f"Wrote {os.path.join(OUT, 'fig4_hinge_bridge.png')}")
+    print("Wrote paper/figures/fig4_hinge_bridge.pdf")
+    print("Wrote paper/figures/fig4_hinge_bridge.png")
 
 
 if __name__ == "__main__":

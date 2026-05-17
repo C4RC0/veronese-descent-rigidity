@@ -101,8 +101,8 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     fig.savefig(os.path.join(OUT, "fig1_proof_cascade.pdf"), bbox_inches="tight")
     fig.savefig(os.path.join(OUT, "fig1_proof_cascade.png"), bbox_inches="tight", dpi=200)
-    print(f"Wrote {os.path.join(OUT, 'fig1_proof_cascade.pdf')}")
-    print(f"Wrote {os.path.join(OUT, 'fig1_proof_cascade.png')}")
+    print("Wrote paper/figures/fig1_proof_cascade.pdf")
+    print("Wrote paper/figures/fig1_proof_cascade.png")
 
 
 if __name__ == "__main__":

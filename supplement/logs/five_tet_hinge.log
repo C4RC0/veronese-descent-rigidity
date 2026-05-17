@@ -1,5 +1,3 @@
-/home/Carco/work/2026/veronese-descent-rigidity/scripts/five_tet_hinge.py:101: SyntaxWarning: "\{" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\{"? A raw string is also an option.
-  (k in {1..4}, l in {1..4}\{k})
 ======================================================================
 5-tetrahedron hinge rigidity: numerical exploration
 ======================================================================
